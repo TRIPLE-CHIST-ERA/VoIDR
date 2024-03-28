@@ -1,21 +1,23 @@
-test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
+test_that("I can parse a file", {
+  suppressWarnings(rdfObj <- loadFile(fixTestFilePath('extdata/rhea.ttl')))
+  assign('rdfObj', rdfObj, envir = parent.env(environment()))
+  expect_equal(names(rdfObj), c('world', 'model', 'storage'))
 })
 
-rdfobj <- loadFile('inst/extdata/rhea.ttl')
-cls <- getClasses(rdfobj)
-cls
-meths <- sapply(cls$cp1, getMethods, rdfobj)
-instances <- sapply(cls$classIri, getInstances, 'https://sparql.rhea-db.org/sparql' )
+test_that("I can get the class names", {
+  suppressWarnings(cls <- getClasses(rdfObj))
+  assign('cls', cls, envir = parent.env(environment()))
+  expect_s3_class(cls, 'data.frame')
+})
 
-getInstancesAll <- function(classIri, endpoint){
-  sparql <- paste0('SELECT ?cpInstance $p $o WHERE { ?cpInstance a <',classIri,'>.
-                                                     ?cpInstance $p $o
-                                                }')
-  SPARQL_query(endpoint, sparql)
-}
-x <-getInstances('http://www.w3.org/ns/sparql-service-description#Dataset', 'https://sparql.rhea-db.org/sparql')
-x
-y <- getMethods('https://sparql.rhea-db.org/.well-known/void#void!Graph', rdfobj)
-cls
-meths
+test_that("I can get the methods for one class", {
+  suppressWarnings(mets <- getMethods(cls$cp1[1], rdfObj))
+  expect_s3_class(mets, 'data.frame')
+})
+
+test_that("I can get the instances for one class (needs to connect to a remote endpoint)", {
+  suppressWarnings(insts <- getInstances(cls$classIri[4],'https://sparql.rhea-db.org/sparql' ))
+  expect_s3_class(insts, 'data.frame')
+})
+
+
