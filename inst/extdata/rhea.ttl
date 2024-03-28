@@ -1,0 +1,1003 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix void_ext: <http://ldf.fi/void-ext#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+<https://sparql.rhea-db.org/sparql> rdf:type <http://www.w3.org/ns/sparql-service-description#Service> ;
+  <http://www.w3.org/ns/sparql-service-description#defaultDataset> <#_1> ;
+  <http://www.w3.org/ns/sparql-service-description#endpoint> <https://sparql.rhea-db.org/sparql> ;
+  <http://www.w3.org/ns/sparql-service-description#resultFormat> <http://www.w3.org/ns/formats/SPARQL_Results_CSV> ,
+    <http://www.w3.org/ns/formats/SPARQL_Results_JSON> ,
+    <http://www.w3.org/ns/formats/N-Triples> ,
+    <http://www.w3.org/ns/formats/RDF_XML> ,
+    <http://www.w3.org/ns/formats/SPARQL_Results_TSV> ,
+    <http://www.w3.org/ns/formats/Turtle> ,
+    <http://www.w3.org/ns/formats/SPARQL_Results_XML> ;
+  <http://www.w3.org/ns/sparql-service-description#supportedLanguage> <http://www.w3.org/ns/sparql-service-description#SPARQL11Query> ;
+  <http://www.w3.org/ns/sparql-service-description#feature> <http://www.w3.org/ns/sparql-service-description#UnionDefaultGraph> ,
+    <http://www.w3.org/ns/sparql-service-description#BasicFederatedQuery> .
+<#_1> rdf:type <http://www.w3.org/ns/sparql-service-description#Dataset> ;
+  <http://www.w3.org/ns/sparql-service-description#defaultGraph> <#_2> ;
+  pav:version "2024_01" ;
+  dcterms:issued "2024-01-24"^^xsd:date ;
+  <http://www.w3.org/ns/sparql-service-description#namedGraph> <http://sparql.rhea-db.org/chebi> ,
+    <https://sparql.rhea-db.org/rhea> ,
+    <https://sparql.rhea-db.org/.well-known/void> ,
+    <https://sparql.rhea-db.org/.well-known/sparql-examples> .
+<#_2> rdf:type <http://www.w3.org/ns/sparql-service-description#Graph> ;
+  void:triples "4477726"^^xsd:long ;
+  dcterms:title "Rhea" ;
+  dcterms:issued "2024-01-24"^^xsd:date .
+<http://sparql.rhea-db.org/chebi> <http://www.w3.org/ns/sparql-service-description#graph> <https://sparql.rhea-db.org/.well-known/void#_graph_chebi> ;
+  <http://www.w3.org/ns/sparql-service-description#name> <http://sparql.rhea-db.org/chebi> ;
+  dcterms:title "Rhea chebi" ;
+  dcterms:creator <https://www.uniprot.org/help/about#SIB> ;
+  dcterms:publisher <https://www.uniprot.org/help/about#SIB> .
+<https://sparql.rhea-db.org/.well-known/void#_graph_chebi> rdf:type <http://www.w3.org/ns/sparql-service-description#Graph> ;
+  void:triples "2880197"^^xsd:long ;
+  dcterms:license <http://creativecommons.org/licenses/by/4.0/> ;
+  void:classes "7"^^xsd:long ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#chebi!AnnotationProperty> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Axiom> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Class> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!ObjectProperty> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Ontology> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Restriction> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!TransitiveProperty> ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#chebi!IAO_0000115> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!charge> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!formula> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!inchi> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!inchikey> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!smiles> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!name> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!hasDbXref> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!hasId> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!hasSynonym> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!inSubset> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!type> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!label> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!subClassOf> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!annotatedProperty> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!annotatedSource> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!annotatedTarget> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!imports> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!inverseOf> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!onProperty> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!someValuesFrom> ;
+  void:distinctObjects "1499375"^^xsd:long ;
+  void_ext:distinctLiterals "1499375"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!AnnotationProperty> void:class owl:AnnotationProperty .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Axiom> void:class owl:Axiom ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#chebi!Axiomchebi!hasDbXref> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Axiomchebi!annotatedProperty> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Axiomchebi!annotatedSource> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Axiomchebi!annotatedTarget> .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Axiomchebi!hasDbXref> void:property <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!hasDbXrefchebi!string> ;
+  void:triples "15880"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!hasDbXrefchebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Axiomchebi!annotatedProperty> void:property owl:annotatedProperty ;
+  void:triples "15880"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Axiomchebi!annotatedSource> void:property owl:annotatedSource ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#chebi!Axiomchebi!annotatedSourcechebi!Class> ;
+  void:triples "15880"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Axiomchebi!annotatedSourcechebi!Class> void:class owl:Class .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Axiomchebi!annotatedTarget> void:property owl:annotatedTarget ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!annotatedTargetchebi!string> ;
+  void:triples "15880"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!annotatedTargetchebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Class> void:class owl:Class ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!IAO_0000115> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!charge> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!formula> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!inchi> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!inchikey> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!smiles> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!name> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!hasDbXref> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!hasId> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!hasSynonym> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!inSubset> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!label> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!subClassOf> .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!IAO_0000115> void:property <http://purl.obolibrary.org/obo/IAO_0000115> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!IAO_0000115chebi!string> ;
+  void:triples "55124"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!IAO_0000115chebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!charge> void:property <http://purl.obolibrary.org/obo/chebi/charge> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!chargechebi!string> ;
+  void:triples "155054"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!chargechebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!formula> void:property <http://purl.obolibrary.org/obo/chebi/formula> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!formulachebi!string> ;
+  void:triples "154558"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!formulachebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!inchi> void:property <http://purl.obolibrary.org/obo/chebi/inchi> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!inchichebi!string> ;
+  void:triples "143556"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!inchichebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!inchikey> void:property <http://purl.obolibrary.org/obo/chebi/inchikey> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!inchikeychebi!string> ;
+  void:triples "143556"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!inchikeychebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!smiles> void:property <http://purl.obolibrary.org/obo/chebi/smiles> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!smileschebi!string> ;
+  void:triples "152938"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!smileschebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!name> void:property <http://purl.uniprot.org/core/name> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!namechebi!string> ;
+  void:triples "15880"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!namechebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!hasDbXref> void:property <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!hasDbXrefchebi!string> ;
+  void:triples "348572"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!hasId> void:property <http://www.geneontology.org/formats/oboInOwl#hasId> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!hasIdchebi!string> ;
+  void:triples "166761"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!hasIdchebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!hasSynonym> void:property <http://www.geneontology.org/formats/oboInOwl#hasSynonym> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!hasSynonymchebi!string> ;
+  void:triples "327369"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!hasSynonymchebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!inSubset> void:property <http://www.geneontology.org/formats/oboInOwl#inSubset> ;
+  void:triples "166761"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!label> void:property rdfs:label ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#chebi!labelchebi!string> ;
+  void:triples "166761"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!labelchebi!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!subClassOf> void:property rdfs:subClassOf ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!subClassOfchebi!Class> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!subClassOfchebi!Restriction> ;
+  void:triples "339952"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!subClassOfchebi!Class> void:class owl:Class .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Classchebi!subClassOfchebi!Restriction> void:class owl:Restriction .
+<https://sparql.rhea-db.org/.well-known/void#chebi!ObjectProperty> void:class owl:ObjectProperty ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#chebi!ObjectPropertychebi!inverseOf> .
+<https://sparql.rhea-db.org/.well-known/void#chebi!ObjectPropertychebi!inverseOf> void:property owl:inverseOf ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#chebi!ObjectPropertychebi!inverseOfchebi!ObjectProperty> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!ObjectPropertychebi!inverseOfchebi!TransitiveProperty> ;
+  void:triples "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!ObjectPropertychebi!inverseOfchebi!ObjectProperty> void:class owl:ObjectProperty .
+<https://sparql.rhea-db.org/.well-known/void#chebi!ObjectPropertychebi!inverseOfchebi!TransitiveProperty> void:class owl:TransitiveProperty .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Ontology> void:class owl:Ontology ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#chebi!Ontologychebi!imports> .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Ontologychebi!imports> void:property owl:imports ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Restriction> void:class owl:Restriction ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#chebi!Restrictionchebi!onProperty> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Restrictionchebi!someValuesFrom> .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Restrictionchebi!onProperty> void:property owl:onProperty ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#chebi!Restrictionchebi!onPropertychebi!ObjectProperty> ,
+    <https://sparql.rhea-db.org/.well-known/void#chebi!Restrictionchebi!onPropertychebi!TransitiveProperty> ;
+  void:triples "99055"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Restrictionchebi!onPropertychebi!ObjectProperty> void:class owl:ObjectProperty .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Restrictionchebi!onPropertychebi!TransitiveProperty> void:class owl:TransitiveProperty .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Restrictionchebi!someValuesFrom> void:property owl:someValuesFrom ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#chebi!Restrictionchebi!someValuesFromchebi!Class> ;
+  void:triples "99055"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!Restrictionchebi!someValuesFromchebi!Class> void:class owl:Class .
+<https://sparql.rhea-db.org/.well-known/void#chebi!TransitiveProperty> void:class owl:TransitiveProperty ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#chebi!TransitivePropertychebi!inverseOf> .
+<https://sparql.rhea-db.org/.well-known/void#chebi!TransitivePropertychebi!inverseOf> void:property owl:inverseOf ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#chebi!TransitivePropertychebi!inverseOfchebi!ObjectProperty> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!TransitivePropertychebi!inverseOfchebi!ObjectProperty> void:class owl:ObjectProperty .
+<https://sparql.rhea-db.org/.well-known/void#chebi!IAO_0000115> void:property <http://purl.obolibrary.org/obo/IAO_0000115> ;
+  void:triples "55124"^^xsd:long ;
+  void:distinctSubjects "55124"^^xsd:long ;
+  void:distinctObjects "52718"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!charge> void:property <http://purl.obolibrary.org/obo/chebi/charge> ;
+  void:triples "155054"^^xsd:long ;
+  void:distinctSubjects "155054"^^xsd:long ;
+  void:distinctObjects "21"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!formula> void:property <http://purl.obolibrary.org/obo/chebi/formula> ;
+  void:triples "154558"^^xsd:long ;
+  void:distinctSubjects "154558"^^xsd:long ;
+  void:distinctObjects "50014"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!inchi> void:property <http://purl.obolibrary.org/obo/chebi/inchi> ;
+  void:triples "143556"^^xsd:long ;
+  void:distinctSubjects "143556"^^xsd:long ;
+  void:distinctObjects "142618"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!inchikey> void:property <http://purl.obolibrary.org/obo/chebi/inchikey> ;
+  void:triples "143556"^^xsd:long ;
+  void:distinctSubjects "143556"^^xsd:long ;
+  void:distinctObjects "142617"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!smiles> void:property <http://purl.obolibrary.org/obo/chebi/smiles> ;
+  void:triples "152938"^^xsd:long ;
+  void:distinctSubjects "152938"^^xsd:long ;
+  void:distinctObjects "149981"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!name> void:property <http://purl.uniprot.org/core/name> ;
+  void:triples "15880"^^xsd:long ;
+  void:distinctSubjects "15880"^^xsd:long ;
+  void:distinctObjects "15880"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!hasDbXref> void:property <http://www.geneontology.org/formats/oboInOwl#hasDbXref> ;
+  void:triples "364452"^^xsd:long ;
+  void:distinctSubjects "149838"^^xsd:long ;
+  void:distinctObjects "317416"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!hasId> void:property <http://www.geneontology.org/formats/oboInOwl#hasId> ;
+  void:triples "166761"^^xsd:long ;
+  void:distinctSubjects "166761"^^xsd:long ;
+  void:distinctObjects "166761"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!hasSynonym> void:property <http://www.geneontology.org/formats/oboInOwl#hasSynonym> ;
+  void:triples "327369"^^xsd:long ;
+  void:distinctSubjects "112047"^^xsd:long ;
+  void:distinctObjects "315149"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!inSubset> void:property <http://www.geneontology.org/formats/oboInOwl#inSubset> ;
+  void:triples "166761"^^xsd:long ;
+  void:distinctSubjects "166761"^^xsd:long ;
+  void:distinctObjects "3"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!type> void:property rdf:type ;
+  void:triples "281720"^^xsd:long ;
+  void:distinctSubjects "281719"^^xsd:long ;
+  void:distinctObjects "7"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!label> void:property rdfs:label ;
+  void:triples "166761"^^xsd:long ;
+  void:distinctSubjects "166761"^^xsd:long ;
+  void:distinctObjects "166761"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!subClassOf> void:property rdfs:subClassOf ;
+  void:triples "339952"^^xsd:long ;
+  void:distinctSubjects "166758"^^xsd:long ;
+  void:distinctObjects "112057"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!annotatedProperty> void:property owl:annotatedProperty ;
+  void:triples "15880"^^xsd:long ;
+  void:distinctSubjects "15880"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!annotatedSource> void:property owl:annotatedSource ;
+  void:triples "15880"^^xsd:long ;
+  void:distinctSubjects "15880"^^xsd:long ;
+  void:distinctObjects "15880"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!annotatedTarget> void:property owl:annotatedTarget ;
+  void:triples "15880"^^xsd:long ;
+  void:distinctSubjects "15880"^^xsd:long ;
+  void:distinctObjects "15880"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!imports> void:property owl:imports ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!inverseOf> void:property owl:inverseOf ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "4"^^xsd:long ;
+  void:distinctObjects "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!onProperty> void:property owl:onProperty ;
+  void:triples "99055"^^xsd:long ;
+  void:distinctSubjects "99055"^^xsd:long ;
+  void:distinctObjects "10"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#chebi!someValuesFrom> void:property owl:someValuesFrom ;
+  void:triples "99055"^^xsd:long ;
+  void:distinctSubjects "99055"^^xsd:long ;
+  void:distinctObjects "26630"^^xsd:long .
+<https://www.uniprot.org/help/about#SIB> foaf:primaryTopicOf <https://www.sib.swiss> .
+<https://sparql.rhea-db.org/rhea> <http://www.w3.org/ns/sparql-service-description#graph> <https://sparql.rhea-db.org/.well-known/void#_graph_rhea> ;
+  <http://www.w3.org/ns/sparql-service-description#name> <https://sparql.rhea-db.org/rhea> ;
+  dcterms:title "Rhea rhea" ;
+  dcterms:creator <https://www.uniprot.org/help/about#SIB> ;
+  dcterms:publisher <https://www.uniprot.org/help/about#SIB> .
+<https://sparql.rhea-db.org/.well-known/void#_graph_rhea> rdf:type <http://www.w3.org/ns/sparql-service-description#Graph> ;
+  void:triples "1596507"^^xsd:long ;
+  dcterms:license <http://creativecommons.org/licenses/by/4.0/> ;
+  void:classes "2"^^xsd:long ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#rhea!Property> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!Class> ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#rhea!accession> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!bidirectionalReaction> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!charge> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!chebi> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!citation> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!coefficient> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!compound> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains1> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains10> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains11> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains12> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains13> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains14> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains16> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains17> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains18> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains19> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains2> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains20> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains21> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains22> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains24> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains26> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains27> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains28> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains2n> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains3> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains32> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains4> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains40> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains5> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains6> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains7> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains8> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!contains9> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!containsN> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!containsNminus1> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!containsNplus1> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!curatedOrder> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!directionalReaction> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!ec> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!equation> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!formula> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!htmlEquation> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!htmlName> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!id> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!isChemicallyBalanced> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!isTransport> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!location> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!name> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!polymerizationIndex> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!position> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!products> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!reactivePart> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!side> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!status> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!substrates> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!substratesOrProducts> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!transformableTo> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!underlyingChebi> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!type> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!comment> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!label> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!seeAlso> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!subClassOf> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!subPropertyOf> ;
+  void:distinctObjects "311966"^^xsd:long ;
+  void_ext:distinctLiterals "311966"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!Property> void:class rdf:Property .
+<https://sparql.rhea-db.org/.well-known/void#rhea!Class> void:class rdfs:Class ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#rhea!Classrhea!comment> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!Classrhea!label> ,
+    <https://sparql.rhea-db.org/.well-known/void#rhea!Classrhea!subClassOf> .
+<https://sparql.rhea-db.org/.well-known/void#rhea!Classrhea!comment> void:property rdfs:comment ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#rhea!commentrhea!string> ;
+  void:triples "15"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!commentrhea!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#rhea!Classrhea!label> void:property rdfs:label ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#rhea!labelrhea!string> ;
+  void:triples "15"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!labelrhea!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#rhea!Classrhea!subClassOf> void:property rdfs:subClassOf ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#rhea!Classrhea!subClassOfrhea!Class> ;
+  void:triples "12"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!Classrhea!subClassOfrhea!Class> void:class rdfs:Class .
+<https://sparql.rhea-db.org/.well-known/void#rhea!accession> void:property <http://rdf.rhea-db.org/accession> ;
+  void:triples "79710"^^xsd:long ;
+  void:distinctSubjects "79710"^^xsd:long ;
+  void:distinctObjects "79710"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!bidirectionalReaction> void:property <http://rdf.rhea-db.org/bidirectionalReaction> ;
+  void:triples "16545"^^xsd:long ;
+  void:distinctSubjects "16545"^^xsd:long ;
+  void:distinctObjects "16545"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!charge> void:property <http://rdf.rhea-db.org/charge> ;
+  void:triples "13618"^^xsd:long ;
+  void:distinctSubjects "13618"^^xsd:long ;
+  void:distinctObjects "72"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!chebi> void:property <http://rdf.rhea-db.org/chebi> ;
+  void:triples "13368"^^xsd:long ;
+  void:distinctSubjects "13368"^^xsd:long ;
+  void:distinctObjects "12433"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!citation> void:property <http://rdf.rhea-db.org/citation> ;
+  void:triples "139636"^^xsd:long ;
+  void:distinctSubjects "61944"^^xsd:long ;
+  void:distinctObjects "17665"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!coefficient> void:property <http://rdf.rhea-db.org/coefficient> ;
+  void:triples "31"^^xsd:long ;
+  void:distinctSubjects "31"^^xsd:long ;
+  void:distinctObjects "31"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!compound> void:property <http://rdf.rhea-db.org/compound> ;
+  void:triples "79123"^^xsd:long ;
+  void:distinctSubjects "79123"^^xsd:long ;
+  void:distinctObjects "13530"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains> void:property <http://rdf.rhea-db.org/contains> ;
+  void:triples "79129"^^xsd:long ;
+  void:distinctSubjects "32540"^^xsd:long ;
+  void:distinctObjects "79123"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains1> void:property <http://rdf.rhea-db.org/contains1> ;
+  void:triples "73054"^^xsd:long ;
+  void:distinctSubjects "32349"^^xsd:long ;
+  void:distinctObjects "73050"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains10> void:property <http://rdf.rhea-db.org/contains10> ;
+  void:triples "18"^^xsd:long ;
+  void:distinctSubjects "16"^^xsd:long ;
+  void:distinctObjects "18"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains11> void:property <http://rdf.rhea-db.org/contains11> ;
+  void:triples "15"^^xsd:long ;
+  void:distinctSubjects "15"^^xsd:long ;
+  void:distinctObjects "15"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains12> void:property <http://rdf.rhea-db.org/contains12> ;
+  void:triples "18"^^xsd:long ;
+  void:distinctSubjects "14"^^xsd:long ;
+  void:distinctObjects "18"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains13> void:property <http://rdf.rhea-db.org/contains13> ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "4"^^xsd:long ;
+  void:distinctObjects "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains14> void:property <http://rdf.rhea-db.org/contains14> ;
+  void:triples "2"^^xsd:long ;
+  void:distinctSubjects "2"^^xsd:long ;
+  void:distinctObjects "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains16> void:property <http://rdf.rhea-db.org/contains16> ;
+  void:triples "14"^^xsd:long ;
+  void:distinctSubjects "10"^^xsd:long ;
+  void:distinctObjects "14"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains17> void:property <http://rdf.rhea-db.org/contains17> ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains18> void:property <http://rdf.rhea-db.org/contains18> ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "4"^^xsd:long ;
+  void:distinctObjects "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains19> void:property <http://rdf.rhea-db.org/contains19> ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains2> void:property <http://rdf.rhea-db.org/contains2> ;
+  void:triples "4247"^^xsd:long ;
+  void:distinctSubjects "3217"^^xsd:long ;
+  void:distinctObjects "4247"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains20> void:property <http://rdf.rhea-db.org/contains20> ;
+  void:triples "3"^^xsd:long ;
+  void:distinctSubjects "3"^^xsd:long ;
+  void:distinctObjects "3"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains21> void:property <http://rdf.rhea-db.org/contains21> ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains22> void:property <http://rdf.rhea-db.org/contains22> ;
+  void:triples "3"^^xsd:long ;
+  void:distinctSubjects "3"^^xsd:long ;
+  void:distinctObjects "3"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains24> void:property <http://rdf.rhea-db.org/contains24> ;
+  void:triples "2"^^xsd:long ;
+  void:distinctSubjects "2"^^xsd:long ;
+  void:distinctObjects "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains26> void:property <http://rdf.rhea-db.org/contains26> ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains27> void:property <http://rdf.rhea-db.org/contains27> ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains28> void:property <http://rdf.rhea-db.org/contains28> ;
+  void:triples "3"^^xsd:long ;
+  void:distinctSubjects "2"^^xsd:long ;
+  void:distinctObjects "3"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains2n> void:property <http://rdf.rhea-db.org/contains2n> ;
+  void:triples "11"^^xsd:long ;
+  void:distinctSubjects "8"^^xsd:long ;
+  void:distinctObjects "11"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains3> void:property <http://rdf.rhea-db.org/contains3> ;
+  void:triples "744"^^xsd:long ;
+  void:distinctSubjects "598"^^xsd:long ;
+  void:distinctObjects "744"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains32> void:property <http://rdf.rhea-db.org/contains32> ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains4> void:property <http://rdf.rhea-db.org/contains4> ;
+  void:triples "393"^^xsd:long ;
+  void:distinctSubjects "297"^^xsd:long ;
+  void:distinctObjects "393"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains40> void:property <http://rdf.rhea-db.org/contains40> ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "2"^^xsd:long ;
+  void:distinctObjects "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains5> void:property <http://rdf.rhea-db.org/contains5> ;
+  void:triples "110"^^xsd:long ;
+  void:distinctSubjects "89"^^xsd:long ;
+  void:distinctObjects "110"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains6> void:property <http://rdf.rhea-db.org/contains6> ;
+  void:triples "131"^^xsd:long ;
+  void:distinctSubjects "117"^^xsd:long ;
+  void:distinctObjects "131"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains7> void:property <http://rdf.rhea-db.org/contains7> ;
+  void:triples "43"^^xsd:long ;
+  void:distinctSubjects "38"^^xsd:long ;
+  void:distinctObjects "43"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains8> void:property <http://rdf.rhea-db.org/contains8> ;
+  void:triples "100"^^xsd:long ;
+  void:distinctSubjects "67"^^xsd:long ;
+  void:distinctObjects "100"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!contains9> void:property <http://rdf.rhea-db.org/contains9> ;
+  void:triples "25"^^xsd:long ;
+  void:distinctSubjects "20"^^xsd:long ;
+  void:distinctObjects "25"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!containsN> void:property <http://rdf.rhea-db.org/containsN> ;
+  void:triples "166"^^xsd:long ;
+  void:distinctSubjects "140"^^xsd:long ;
+  void:distinctObjects "166"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!containsNminus1> void:property <http://rdf.rhea-db.org/containsNminus1> ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "4"^^xsd:long ;
+  void:distinctObjects "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!containsNplus1> void:property <http://rdf.rhea-db.org/containsNplus1> ;
+  void:triples "5"^^xsd:long ;
+  void:distinctSubjects "5"^^xsd:long ;
+  void:distinctObjects "5"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!curatedOrder> void:property <http://rdf.rhea-db.org/curatedOrder> ;
+  void:triples "32540"^^xsd:long ;
+  void:distinctSubjects "32540"^^xsd:long ;
+  void:distinctObjects "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!directionalReaction> void:property <http://rdf.rhea-db.org/directionalReaction> ;
+  void:triples "33090"^^xsd:long ;
+  void:distinctSubjects "16545"^^xsd:long ;
+  void:distinctObjects "33090"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!ec> void:property <http://rdf.rhea-db.org/ec> ;
+  void:triples "7626"^^xsd:long ;
+  void:distinctSubjects "7347"^^xsd:long ;
+  void:distinctObjects "6001"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!equation> void:property <http://rdf.rhea-db.org/equation> ;
+  void:triples "65080"^^xsd:long ;
+  void:distinctSubjects "65080"^^xsd:long ;
+  void:distinctObjects "65079"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!formula> void:property <http://rdf.rhea-db.org/formula> ;
+  void:triples "13618"^^xsd:long ;
+  void:distinctSubjects "13618"^^xsd:long ;
+  void:distinctObjects "7379"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!htmlEquation> void:property <http://rdf.rhea-db.org/htmlEquation> ;
+  void:triples "65080"^^xsd:long ;
+  void:distinctSubjects "65080"^^xsd:long ;
+  void:distinctObjects "65079"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!htmlName> void:property <http://rdf.rhea-db.org/htmlName> ;
+  void:triples "15406"^^xsd:long ;
+  void:distinctSubjects "15406"^^xsd:long ;
+  void:distinctObjects "14470"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!id> void:property <http://rdf.rhea-db.org/id> ;
+  void:triples "79710"^^xsd:long ;
+  void:distinctSubjects "79710"^^xsd:long ;
+  void:distinctObjects "71959"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!isChemicallyBalanced> void:property <http://rdf.rhea-db.org/isChemicallyBalanced> ;
+  void:triples "65080"^^xsd:long ;
+  void:distinctSubjects "65080"^^xsd:long ;
+  void:distinctObjects "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!isTransport> void:property <http://rdf.rhea-db.org/isTransport> ;
+  void:triples "65080"^^xsd:long ;
+  void:distinctSubjects "65080"^^xsd:long ;
+  void:distinctObjects "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!location> void:property <http://rdf.rhea-db.org/location> ;
+  void:triples "4949"^^xsd:long ;
+  void:distinctSubjects "4949"^^xsd:long ;
+  void:distinctObjects "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!name> void:property <http://rdf.rhea-db.org/name> ;
+  void:triples "15406"^^xsd:long ;
+  void:distinctSubjects "15406"^^xsd:long ;
+  void:distinctObjects "14470"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!polymerizationIndex> void:property <http://rdf.rhea-db.org/polymerizationIndex> ;
+  void:triples "252"^^xsd:long ;
+  void:distinctSubjects "252"^^xsd:long ;
+  void:distinctObjects "8"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!position> void:property <http://rdf.rhea-db.org/position> ;
+  void:triples "445"^^xsd:long ;
+  void:distinctSubjects "445"^^xsd:long ;
+  void:distinctObjects "132"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!products> void:property <http://rdf.rhea-db.org/products> ;
+  void:triples "32540"^^xsd:long ;
+  void:distinctSubjects "32540"^^xsd:long ;
+  void:distinctObjects "32540"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!reactivePart> void:property <http://rdf.rhea-db.org/reactivePart> ;
+  void:triples "1876"^^xsd:long ;
+  void:distinctSubjects "1786"^^xsd:long ;
+  void:distinctObjects "1876"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!side> void:property <http://rdf.rhea-db.org/side> ;
+  void:triples "32540"^^xsd:long ;
+  void:distinctSubjects "16270"^^xsd:long ;
+  void:distinctObjects "32540"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!status> void:property <http://rdf.rhea-db.org/status> ;
+  void:triples "66180"^^xsd:long ;
+  void:distinctSubjects "66180"^^xsd:long ;
+  void:distinctObjects "3"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!substrates> void:property <http://rdf.rhea-db.org/substrates> ;
+  void:triples "32540"^^xsd:long ;
+  void:distinctSubjects "32540"^^xsd:long ;
+  void:distinctObjects "32540"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!substratesOrProducts> void:property <http://rdf.rhea-db.org/substratesOrProducts> ;
+  void:triples "32540"^^xsd:long ;
+  void:distinctSubjects "16270"^^xsd:long ;
+  void:distinctObjects "32540"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!transformableTo> void:property <http://rdf.rhea-db.org/transformableTo> ;
+  void:triples "32540"^^xsd:long ;
+  void:distinctSubjects "32540"^^xsd:long ;
+  void:distinctObjects "32540"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!underlyingChebi> void:property <http://rdf.rhea-db.org/underlyingChebi> ;
+  void:triples "252"^^xsd:long ;
+  void:distinctSubjects "252"^^xsd:long ;
+  void:distinctObjects "184"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!type> void:property rdf:type ;
+  void:triples "46"^^xsd:long ;
+  void:distinctSubjects "46"^^xsd:long ;
+  void:distinctObjects "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!comment> void:property rdfs:comment ;
+  void:triples "10652"^^xsd:long ;
+  void:distinctSubjects "10652"^^xsd:long ;
+  void:distinctObjects "2296"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!label> void:property rdfs:label ;
+  void:triples "65096"^^xsd:long ;
+  void:distinctSubjects "65096"^^xsd:long ;
+  void:distinctObjects "65095"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!seeAlso> void:property rdfs:seeAlso ;
+  void:triples "23671"^^xsd:long ;
+  void:distinctSubjects "19170"^^xsd:long ;
+  void:distinctObjects "22919"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!subClassOf> void:property rdfs:subClassOf ;
+  void:triples "302352"^^xsd:long ;
+  void:distinctSubjects "193261"^^xsd:long ;
+  void:distinctObjects "30705"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#rhea!subPropertyOf> void:property rdfs:subPropertyOf ;
+  void:triples "31"^^xsd:long ;
+  void:distinctSubjects "31"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void> <http://www.w3.org/ns/sparql-service-description#graph> <https://sparql.rhea-db.org/.well-known/void#_graph_void> ;
+  <http://www.w3.org/ns/sparql-service-description#name> <https://sparql.rhea-db.org/.well-known/void> ;
+  dcterms:title "Rhea void" ;
+  dcterms:creator <https://www.uniprot.org/help/about#SIB> ;
+  dcterms:publisher <https://www.uniprot.org/help/about#SIB> .
+<https://sparql.rhea-db.org/.well-known/void#_graph_void> rdf:type <http://www.w3.org/ns/sparql-service-description#Graph> ;
+  void:triples "743"^^xsd:long ;
+  dcterms:license <http://creativecommons.org/licenses/by/4.0/> ;
+  void:classes "3"^^xsd:long ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#void!Dataset> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graph> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Service> ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#void!datatype> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!datatypePartition> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!distinctBlankNodeSubjects> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!distinctIRIReferenceObjects> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!distinctIRIReferenceSubjects> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!distinctLiterals> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!creator> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!issued> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!license> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!publisher> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!title> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!version> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!class> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!classPartition> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!classes> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!distinctObjects> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!distinctSubjects> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!property> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!propertyPartition> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!triples> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!type> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!defaultDataset> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!defaultGraph> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!endpoint> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!feature> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!graph> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!name> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!namedGraph> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!resultFormat> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!supportedLanguage> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!primaryTopicOf> ;
+  void:distinctObjects "132"^^xsd:long ;
+  void_ext:distinctLiterals "132"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Dataset> void:class <http://www.w3.org/ns/sparql-service-description#Dataset> ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#void!Datasetvoid!issued> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Datasetvoid!version> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Datasetvoid!defaultGraph> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Datasetvoid!namedGraph> .
+<https://sparql.rhea-db.org/.well-known/void#void!Datasetvoid!issued> void:property dcterms:issued ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!issuedvoid!date> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!issuedvoid!date> void_ext:datatype xsd:date .
+<https://sparql.rhea-db.org/.well-known/void#void!Datasetvoid!version> void:property pav:version ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!versionvoid!string> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!versionvoid!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#void!Datasetvoid!defaultGraph> void:property <http://www.w3.org/ns/sparql-service-description#defaultGraph> ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#void!Datasetvoid!defaultGraphvoid!Graph> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Datasetvoid!defaultGraphvoid!Graph> void:class <http://www.w3.org/ns/sparql-service-description#Graph> .
+<https://sparql.rhea-db.org/.well-known/void#void!Datasetvoid!namedGraph> void:property <http://www.w3.org/ns/sparql-service-description#namedGraph> ;
+  void:triples "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graph> void:class <http://www.w3.org/ns/sparql-service-description#Graph> ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctBlankNodeSubjects> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctIRIReferenceObjects> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctIRIReferenceSubjects> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctLiterals> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!issued> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!license> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!title> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!classPartition> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!classes> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctObjects> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctSubjects> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!propertyPartition> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!triples> .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctBlankNodeSubjects> void:property void_ext:distinctBlankNodeSubjects ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!distinctBlankNodeSubjectsvoid!long> ;
+  void:triples "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctBlankNodeSubjectsvoid!long> void_ext:datatype xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctIRIReferenceObjects> void:property void_ext:distinctIRIReferenceObjects ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!distinctIRIReferenceObjectsvoid!long> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctIRIReferenceObjectsvoid!long> void_ext:datatype xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctIRIReferenceSubjects> void:property void_ext:distinctIRIReferenceSubjects ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!distinctIRIReferenceSubjectsvoid!long> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctIRIReferenceSubjectsvoid!long> void_ext:datatype xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctLiterals> void:property void_ext:distinctLiterals ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!distinctLiteralsvoid!long> ;
+  void:triples "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctLiteralsvoid!long> void_ext:datatype xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!issued> void:property dcterms:issued ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!issuedvoid!date> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!license> void:property dcterms:license ;
+  void:triples "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!title> void:property dcterms:title ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!titlevoid!string> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!titlevoid!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!classPartition> void:property void:classPartition ;
+  void:triples "12"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!classes> void:property void:classes ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!classesvoid!long> ;
+  void:triples "3"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!classesvoid!long> void_ext:datatype xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctObjects> void:property void:distinctObjects ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!distinctObjectsvoid!long> ;
+  void:triples "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctObjectsvoid!long> void_ext:datatype xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!distinctSubjects> void:property void:distinctSubjects ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!distinctSubjectsvoid!long> ;
+  void:triples "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctSubjectsvoid!long> void_ext:datatype xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!propertyPartition> void:property void:propertyPartition ;
+  void:triples "97"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Graphvoid!triples> void:property void:triples ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#void!triplesvoid!long> ;
+  void:triples "5"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!triplesvoid!long> void_ext:datatype xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Service> void:class <http://www.w3.org/ns/sparql-service-description#Service> ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!defaultDataset> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!endpoint> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!feature> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!resultFormat> ,
+    <https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!supportedLanguage> .
+<https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!defaultDataset> void:property <http://www.w3.org/ns/sparql-service-description#defaultDataset> ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!defaultDatasetvoid!Dataset> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!defaultDatasetvoid!Dataset> void:class <http://www.w3.org/ns/sparql-service-description#Dataset> .
+<https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!endpoint> void:property <http://www.w3.org/ns/sparql-service-description#endpoint> ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!endpointvoid!Service> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!endpointvoid!Service> void:class <http://www.w3.org/ns/sparql-service-description#Service> .
+<https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!feature> void:property <http://www.w3.org/ns/sparql-service-description#feature> ;
+  void:triples "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!resultFormat> void:property <http://www.w3.org/ns/sparql-service-description#resultFormat> ;
+  void:triples "7"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!Servicevoid!supportedLanguage> void:property <http://www.w3.org/ns/sparql-service-description#supportedLanguage> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!datatype> void:property void_ext:datatype ;
+  void:triples "17"^^xsd:long ;
+  void:distinctSubjects "17"^^xsd:long ;
+  void:distinctObjects "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!datatypePartition> void:property void_ext:datatypePartition ;
+  void:triples "20"^^xsd:long ;
+  void:distinctSubjects "20"^^xsd:long ;
+  void:distinctObjects "17"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctBlankNodeSubjects> void:property void_ext:distinctBlankNodeSubjects ;
+  void:triples "2"^^xsd:long ;
+  void:distinctSubjects "2"^^xsd:long ;
+  void:distinctObjects "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctIRIReferenceObjects> void:property void_ext:distinctIRIReferenceObjects ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctIRIReferenceSubjects> void:property void_ext:distinctIRIReferenceSubjects ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctLiterals> void:property void_ext:distinctLiterals ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "4"^^xsd:long ;
+  void:distinctObjects "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!creator> void:property dcterms:creator ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "4"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!issued> void:property dcterms:issued ;
+  void:triples "2"^^xsd:long ;
+  void:distinctSubjects "2"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!license> void:property dcterms:license ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "4"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!publisher> void:property dcterms:publisher ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "4"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!title> void:property dcterms:title ;
+  void:triples "5"^^xsd:long ;
+  void:distinctSubjects "5"^^xsd:long ;
+  void:distinctObjects "5"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!version> void:property pav:version ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!class> void:property void:class ;
+  void:triples "22"^^xsd:long ;
+  void:distinctSubjects "22"^^xsd:long ;
+  void:distinctObjects "11"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!classPartition> void:property void:classPartition ;
+  void:triples "22"^^xsd:long ;
+  void:distinctSubjects "10"^^xsd:long ;
+  void:distinctObjects "22"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!classes> void:property void:classes ;
+  void:triples "3"^^xsd:long ;
+  void:distinctSubjects "3"^^xsd:long ;
+  void:distinctObjects "3"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctObjects> void:property void:distinctObjects ;
+  void:triples "101"^^xsd:long ;
+  void:distinctSubjects "101"^^xsd:long ;
+  void:distinctObjects "64"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!distinctSubjects> void:property void:distinctSubjects ;
+  void:triples "99"^^xsd:long ;
+  void:distinctSubjects "99"^^xsd:long ;
+  void:distinctObjects "60"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!property> void:property void:property ;
+  void:triples "131"^^xsd:long ;
+  void:distinctSubjects "131"^^xsd:long ;
+  void:distinctObjects "91"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!propertyPartition> void:property void:propertyPartition ;
+  void:triples "131"^^xsd:long ;
+  void:distinctSubjects "13"^^xsd:long ;
+  void:distinctObjects "131"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!triples> void:property void:triples ;
+  void:triples "136"^^xsd:long ;
+  void:distinctSubjects "136"^^xsd:long ;
+  void:distinctObjects "65"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!type> void:property rdf:type ;
+  void:triples "7"^^xsd:long ;
+  void:distinctSubjects "7"^^xsd:long ;
+  void:distinctObjects "3"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!defaultDataset> void:property <http://www.w3.org/ns/sparql-service-description#defaultDataset> ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!defaultGraph> void:property <http://www.w3.org/ns/sparql-service-description#defaultGraph> ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!endpoint> void:property <http://www.w3.org/ns/sparql-service-description#endpoint> ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!feature> void:property <http://www.w3.org/ns/sparql-service-description#feature> ;
+  void:triples "2"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "2"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!graph> void:property <http://www.w3.org/ns/sparql-service-description#graph> ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "4"^^xsd:long ;
+  void:distinctObjects "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!name> void:property <http://www.w3.org/ns/sparql-service-description#name> ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "4"^^xsd:long ;
+  void:distinctObjects "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!namedGraph> void:property <http://www.w3.org/ns/sparql-service-description#namedGraph> ;
+  void:triples "4"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "4"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!resultFormat> void:property <http://www.w3.org/ns/sparql-service-description#resultFormat> ;
+  void:triples "7"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "7"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!supportedLanguage> void:property <http://www.w3.org/ns/sparql-service-description#supportedLanguage> ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#void!primaryTopicOf> void:property foaf:primaryTopicOf ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/sparql-examples> <http://www.w3.org/ns/sparql-service-description#graph> <https://sparql.rhea-db.org/.well-known/void#_graph_sparql-examples> ;
+  <http://www.w3.org/ns/sparql-service-description#name> <https://sparql.rhea-db.org/.well-known/sparql-examples> ;
+  dcterms:title "Rhea sparql-examples" ;
+  dcterms:creator <https://www.uniprot.org/help/about#SIB> ;
+  dcterms:publisher <https://www.uniprot.org/help/about#SIB> .
+<https://sparql.rhea-db.org/.well-known/void#_graph_sparql-examples> rdf:type <http://www.w3.org/ns/sparql-service-description#Graph> ;
+  void:triples "279"^^xsd:long ;
+  dcterms:license <http://creativecommons.org/licenses/by/4.0/> ;
+  void:classes "3"^^xsd:long ;
+  void:classPartition <https://sparql.rhea-db.org/.well-known/void#sparql-examples!Ontology> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLExecutable> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLSelectExecutable> ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#sparql-examples!type> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!comment> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!imports> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!declare> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!namesapce> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!namespace> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!prefix> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!prefixes> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!select> ;
+  void:distinctObjects "162"^^xsd:long ;
+  void_ext:distinctLiterals "162"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!Ontology> void:class owl:Ontology ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#sparql-examples!Ontologysparql-examples!comment> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!Ontologysparql-examples!imports> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!Ontologysparql-examples!declare> .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!Ontologysparql-examples!comment> void:property rdfs:comment ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#sparql-examples!commentsparql-examples!string> ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!commentsparql-examples!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!Ontologysparql-examples!imports> void:property owl:imports ;
+  void:triples "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!Ontologysparql-examples!declare> void:property <http://www.w3.org/ns/shacl#declare> ;
+  void:triples "63"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLExecutable> void:class <http://www.w3.org/ns/shacl#SPARQLExecutable> ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLExecutablesparql-examples!comment> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLExecutablesparql-examples!prefixes> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLExecutablesparql-examples!select> .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLExecutablesparql-examples!comment> void:property rdfs:comment ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#sparql-examples!commentsparql-examples!HTML> ;
+  void:triples "17"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!commentsparql-examples!HTML> void_ext:datatype rdf:HTML .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLExecutablesparql-examples!prefixes> void:property <http://www.w3.org/ns/shacl#prefixes> ;
+  void:triples "17"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLExecutablesparql-examples!select> void:property <http://www.w3.org/ns/shacl#select> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#sparql-examples!selectsparql-examples!string> ;
+  void:triples "17"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!selectsparql-examples!string> void_ext:datatype xsd:string .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLSelectExecutable> void:class <http://www.w3.org/ns/shacl#SPARQLSelectExecutable> ;
+  void:propertyPartition <https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLSelectExecutablesparql-examples!comment> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLSelectExecutablesparql-examples!prefixes> ,
+    <https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLSelectExecutablesparql-examples!select> .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLSelectExecutablesparql-examples!comment> void:property rdfs:comment ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#sparql-examples!commentsparql-examples!HTML> ;
+  void:triples "17"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLSelectExecutablesparql-examples!prefixes> void:property <http://www.w3.org/ns/shacl#prefixes> ;
+  void:triples "17"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!SPARQLSelectExecutablesparql-examples!select> void:property <http://www.w3.org/ns/shacl#select> ;
+  void_ext:datatypePartition <https://sparql.rhea-db.org/.well-known/void#sparql-examples!selectsparql-examples!string> ;
+  void:triples "17"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!type> void:property rdf:type ;
+  void:triples "35"^^xsd:long ;
+  void:distinctSubjects "18"^^xsd:long ;
+  void:distinctObjects "3"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!comment> void:property rdfs:comment ;
+  void:triples "18"^^xsd:long ;
+  void:distinctSubjects "18"^^xsd:long ;
+  void:distinctObjects "18"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!imports> void:property owl:imports ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!declare> void:property <http://www.w3.org/ns/shacl#declare> ;
+  void:triples "63"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "63"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!namesapce> void:property <http://www.w3.org/ns/shacl#namesapce> ;
+  void:triples "1"^^xsd:long ;
+  void:distinctSubjects "1"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!namespace> void:property <http://www.w3.org/ns/shacl#namespace> ;
+  void:triples "63"^^xsd:long ;
+  void:distinctSubjects "63"^^xsd:long ;
+  void:distinctObjects "62"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!prefix> void:property <http://www.w3.org/ns/shacl#prefix> ;
+  void:triples "64"^^xsd:long ;
+  void:distinctSubjects "64"^^xsd:long ;
+  void:distinctObjects "64"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!prefixes> void:property <http://www.w3.org/ns/shacl#prefixes> ;
+  void:triples "17"^^xsd:long ;
+  void:distinctSubjects "17"^^xsd:long ;
+  void:distinctObjects "1"^^xsd:long .
+<https://sparql.rhea-db.org/.well-known/void#sparql-examples!select> void:property <http://www.w3.org/ns/shacl#select> ;
+  void:triples "17"^^xsd:long ;
+  void:distinctSubjects "17"^^xsd:long ;
+  void:distinctObjects "17"^^xsd:long .
