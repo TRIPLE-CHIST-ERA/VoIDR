@@ -1,0 +1,4 @@
+makeOneClass <- function(iri, rdfobj){
+
+
+}
