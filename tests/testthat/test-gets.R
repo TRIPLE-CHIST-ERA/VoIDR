@@ -22,3 +22,32 @@ test_that("I can get the instances for one class (needs to connect to a remote e
 })
 
 
+
+sparql <-  paste0('PREFIX sh:<http://www.w3.org/ns/shacl#>
+PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
+PREFIX void:<http://rdfs.org/ns/void#>
+PREFIX void_ext:<http://ldf.fi/void-ext#>
+SELECT DISTINCT   ?classFrom
+where {
+  ?cp1 void:class ?classFrom .
+  ?cp1 void:propertyPartition ?pp1 .
+  ?pp1 void:property ?propIri .
+  ?pp1 void:triples ?triples .
+  {
+    ?pp1 void_ext:datatypePartition ?cp2 .
+    ?cp2 void_ext:datatype ?datatypeTo .
+  }
+  } ')
+
+x <- rdflib::rdf_query(rdfObj, sparql)
+
+cName <- x[1,1]
+cName
+
+sparql <-  paste0('SELECT *
+                  WHERE {
+                    ?cpInstance a <',cName,'> .
+                    ?cpInstance ?p $o .
+                  }')
+endpoint <-'https://sparql.rhea-db.org/sparql'
+SPARQL_query(endpoint, sparql)

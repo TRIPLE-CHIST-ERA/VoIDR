@@ -50,20 +50,3 @@ loadFile <- function(fname){
 }
 
 
-sparql <-  paste0('PREFIX sh:<http://www.w3.org/ns/shacl#>
-PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
-PREFIX void:<http://rdfs.org/ns/void#>
-PREFIX void_ext:<http://ldf.fi/void-ext#>
-SELECT DISTINCT   ?classFrom
-where {
-  ?cp1 void:class ?classFrom .
-  ?cp1 void:propertyPartition ?pp1 .
-  ?pp1 void:property ?propIri .
-  ?pp1 void:triples ?triples .
-  {
-    ?pp1 void_ext:datatypePartition ?cp2 .
-    ?cp2 void_ext:datatype ?datatypeTo .
-  }
-  } ')
-
-x <- rdflib::rdf_query(rdfObj, sparql)
