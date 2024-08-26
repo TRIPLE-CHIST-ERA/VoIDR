@@ -47,10 +47,10 @@ getClasses <- function(rdfObj){
 PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
 PREFIX void:<http://rdfs.org/ns/void#>
 PREFIX void_ext:<http://ldf.fi/void-ext#>
-SELECT DISTINCT ?cp1,  ?classIri
+SELECT DISTINCT ?voidName,  ?classIri
 where {
-  ?cp1 void:class ?classIri .
-  ?cp1 void:propertyPartition ?pp1 .
+  ?voidName void:class ?classIri .
+  ?voidName void:propertyPartition ?pp1 .
   ?pp1 void:property ?propIri .
   ?pp1 void:triples ?triples .
   {
@@ -65,5 +65,27 @@ where {
 loadFile <- function(fname){
   rdflib::rdf_parse(fname)
 }
+getEntity <- function(voidName, classIri, voidObj, endpoint){
 
+  mets <- getMethods(voidName, voidObj)
+  propFilter <- paste(mets$propIri, collapse='>, <')
+  primaryColName <- sub('.*#','',classIri)
+  sparql <-  paste0('SELECT *
+                  WHERE {
+                    ?',primaryColName,' a <',classIri,'> .
+                    ?',primaryColName,' ?p ?value
+                    FILTER(?p IN (<', propFilter, '>))
+                  }')
+  #sparql <-  paste0('SELECT *
+  #                WHERE {
+  #                  ?cpInstance a <',classIri,'> .
+  #                  ?cpInstance ?p ?value
+  #                  FILTER(?p IN (<', propFilter, '>))
+  #                }')
+  long_df <- SPARQL_query(endpoint, sparql)
+  return(long_df)
+  wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = paste)
+  colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*#','',x))
+  return(wide_df)
+}
 
