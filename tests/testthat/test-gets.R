@@ -23,13 +23,13 @@ test_that("I can get the instances for one class (needs to connect to a remote e
 
 
 
-sparql <-  paste0('PREFIX sh:<http://www.w3.org/ns/shacl#>
+getCls <-  paste0('PREFIX sh:<http://www.w3.org/ns/shacl#>
 PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
 PREFIX void:<http://rdfs.org/ns/void#>
 PREFIX void_ext:<http://ldf.fi/void-ext#>
-SELECT DISTINCT   ?classFrom
+SELECT DISTINCT ?cp1,  ?classIri
 where {
-  ?cp1 void:class ?classFrom .
+  ?cp1 void:class ?classIri .
   ?cp1 void:propertyPartition ?pp1 .
   ?pp1 void:property ?propIri .
   ?pp1 void:triples ?triples .
@@ -39,15 +39,23 @@ where {
   }
   } ')
 
-x <- rdflib::rdf_query(rdfObj, sparql)
+x <- rdflib::rdf_query(rdfObj, getCls)
 
-cName <- x[1,1]
+cName <- x[8,1]
 cName
-
+cIri <- x[8,2]
+cIri
+mets <- getMethods(cName, rdfObj)
+mets
+propFilter <- paste(mets$propIri, collapse='>, <')
 sparql <-  paste0('SELECT *
                   WHERE {
-                    ?cpInstance a <',cName,'> .
-                    ?cpInstance ?p $o .
+                    ?cpInstance a <',cIri,'> .
+                    ?cpInstance ?p ?value
+                    FILTER(?p IN (<', propFilter, '>))
                   }')
 endpoint <-'https://sparql.rhea-db.org/sparql'
-SPARQL_query(endpoint, sparql)
+long_df <- SPARQL_query(endpoint, sparql)
+wide_df <- tidyr::pivot_wider(long_df, id_cols= 'cpInstance', names_from = 'p', values_from= 'value')
+colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*#','',x))
+str(wide_df)
