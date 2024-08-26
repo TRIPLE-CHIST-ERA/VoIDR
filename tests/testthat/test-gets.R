@@ -56,6 +56,6 @@ sparql <-  paste0('SELECT *
                   }')
 endpoint <-'https://sparql.rhea-db.org/sparql'
 long_df <- SPARQL_query(endpoint, sparql)
-wide_df <- tidyr::pivot_wider(long_df, id_cols= 'cpInstance', names_from = 'p', values_from= 'value')
+wide_df <- tidyr::pivot_wider(long_df, id_cols= 'cpInstance', names_from = 'p', values_from= 'value', values_fn = paste)
 colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*#','',x))
 str(wide_df)
