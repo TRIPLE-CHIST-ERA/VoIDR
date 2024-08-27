@@ -11,7 +11,7 @@ test_that("I can get the class names", {
 })
 
 test_that("I can get the methods for one class", {
-  suppressWarnings(mets <- getMethods(cls$voidName[1], rdfObj))
+  suppressWarnings(mets <- getMethods(cls$voidName[2], rdfObj))
   expect_s3_class(mets, 'data.frame')
 })
 
@@ -63,6 +63,9 @@ sparql <-  paste0('SELECT *
                   }')
 endpoint <-'https://sparql.rhea-db.org/sparql'
 long_df <- SPARQL_query(endpoint, sparql)
-wide_df <- tidyr::pivot_wider(long_df, id_cols= 'cpInstance', names_from = 'p', values_from= 'value', values_fn = paste)
+wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= ', '))
 colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*#','',x))
 str(wide_df)
+
+y <- reshape2::dcast(x, Class~p, value.var = 'value', fun.aggregate = function(x)paste(x, collapse= ', '))
+y <- tidyr::pivot_wider(x, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= ', '))

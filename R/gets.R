@@ -83,9 +83,18 @@ getEntity <- function(voidName, classIri, voidObj, endpoint){
   #                  FILTER(?p IN (<', propFilter, '>))
   #                }')
   long_df <- SPARQL_query(endpoint, sparql)
-  return(long_df)
-  wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = paste)
+  if(is.null(long_df)){
+    return(NULL)
+  }
+  wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= '~$~'))
   colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*#','',x))
   return(wide_df)
 }
+
+denormalizeDF <- function(df, sep='~$~'){
+  # "explode" the cardinality of df by creating one line per separated value
+  apply(df, 1, strsplit, sep) %>% lapply(expand.grid) %>% Reduce(rbind,.)
+}
+
+
 
