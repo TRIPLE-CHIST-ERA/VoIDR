@@ -91,7 +91,7 @@ getEntity <- function(voidName, classIri, voidObj, endpoint){
   return(wide_df)
 }
 
-denormalizeDF <- function(df, sep='~$~'){
+expandDF <- function(df, sep='~$~'){
   # "explode" the cardinality of df by creating one line per separated value
   apply(df, 1, strsplit, sep) %>% lapply(expand.grid) %>% Reduce(rbind,.) %>% tibble()
 }

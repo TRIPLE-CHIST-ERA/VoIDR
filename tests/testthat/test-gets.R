@@ -23,12 +23,7 @@ test_that("I can get the instances for one class (needs to connect to a remote e
 })
 
 allEntities <- apply(cls,1, function(x) getEntity(x[1], x[2], rdfObj, 'https://sparql.rhea-db.org/sparql'), simplify = FALSE)
-allEntities <- list()
-for (i in c(2:nrow(cls))){
-  print(i)
-  allEntities[[i]] <- getEntity(cls[i,1], cls[i,2], rdfObj, 'https://sparql.rhea-db.org/sparql')
-}
-str(allEntities)
+x <- allEntities[[2]][1:1000,]
 
 getCls <-  paste0('PREFIX sh:<http://www.w3.org/ns/shacl#>
 PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
