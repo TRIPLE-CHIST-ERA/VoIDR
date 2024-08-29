@@ -68,14 +68,28 @@ loadFile <- function(fname){
 getEntity <- function(voidName, classIri, voidObj, endpoint){
 
   mets <- getMethods(voidName, voidObj)
-  propFilter <- paste(mets$propIri, collapse='>, <')
-  primaryColName <- sub('.*#','',classIri)
+  propFilter <- paste(unique(mets$propIri), collapse='>, <')# some methods appear multiple times (different classTo), hence the unique
+  primaryColName <- sub('.*[/|#]','',classIri)
   sparql <-  paste0('SELECT *
                   WHERE {
                     ?',primaryColName,' a <',classIri,'> .
                     ?',primaryColName,' ?p ?value
                     FILTER(?p IN (<', propFilter, '>))
                   }')
+
+#  sparql <-  paste0('SELECT *
+#                  WHERE {
+#  {
+#    select ?P
+#    WHERE{
+#      VAULES ?p { <', propFilter, '> }
+#    }
+#  }
+#    ?',primaryColName,' a <',classIri,'> .
+#                    ?',primaryColName,' ?p ?value
+# }
+  #### utilise VALUES
+  cat(sparql)
   #sparql <-  paste0('SELECT *
   #                WHERE {
   #                  ?cpInstance a <',classIri,'> .
@@ -86,12 +100,12 @@ getEntity <- function(voidName, classIri, voidObj, endpoint){
   if(is.null(long_df)){
     return(NULL)
   }
-  wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= '~$~'))
-  colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*#','',x))
+  wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= '~~'))
+  colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*[/|#]','',x))
   return(wide_df)
 }
 
-expandDF <- function(df, sep='~$~'){
+expandDF <- function(df, sep='~~'){
   # "explode" the cardinality of df by creating one line per separated value
   apply(df, 1, strsplit, sep) %>% lapply(expand.grid) %>% Reduce(rbind,.) %>% tibble()
 }

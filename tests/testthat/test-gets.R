@@ -1,5 +1,6 @@
 test_that("I can parse a file", {
-  suppressWarnings(rdfObj <- loadFile(fixTestFilePath('extdata/rhea.ttl')))
+  #suppressWarnings(rdfObj <- loadFile(fixTestFilePath('extdata/rhea.ttl')))
+  suppressWarnings(rdfObj <- loadFile(fixTestFilePath('extdata/void.rdf')))
   assign('rdfObj', rdfObj, envir = parent.env(environment()))
   expect_equal(names(rdfObj), c('world', 'model', 'storage'))
 })
@@ -22,8 +23,11 @@ test_that("I can get the instances for one class (needs to connect to a remote e
   expect_s3_class(insts, 'data.frame')
 })
 
-allEntities <- apply(cls,1, function(x) getEntity(x[1], x[2], rdfObj, 'https://sparql.rhea-db.org/sparql'), simplify = FALSE)
-x <- allEntities[[2]][1:1000,]
+allEntities <- apply(cls,1, function(x) getEntity(x[1], x[2], rdfObj, 'http://localhost:7200/repositories/beatles'), simplify = FALSE)
+#x <- allEntities[[2]][1:1000,]
+names(allEntities) <- lapply(cls$classIri, function(x)sub('.*[/|#]', '',x))
+x <- allEntities[[1]]
+#getEntity(cls[1,1], cls[1,2], rdfObj, 'http://localhost:7200/repositories/beatles')
 
 getCls <-  paste0('PREFIX sh:<http://www.w3.org/ns/shacl#>
 PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
