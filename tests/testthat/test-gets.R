@@ -12,7 +12,7 @@ test_that("I can get the class names", {
 })
 
 test_that("I can get the methods for one class", {
-  suppressWarnings(mets <- getMethods(cls$voidName[2], rdfObj))
+  suppressWarnings(mets <- getMethods(cls$voidName[1], rdfObj))
   expect_s3_class(mets, 'data.frame')
 })
 
