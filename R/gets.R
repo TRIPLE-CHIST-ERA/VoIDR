@@ -68,14 +68,22 @@ loadFile <- function(fname){
 getEntity <- function(voidName, classIri, voidObj, endpoint){
 
   mets <- getMethods(voidName, voidObj)
-  propFilter <- paste(unique(mets$propIri), collapse='>, <')# some methods appear multiple times (different classTo), hence the unique
+  propFilter <- paste(unique(mets$propIri), collapse='> <')# some methods appear multiple times (different classTo), hence the unique
   primaryColName <- sub('.*[/|#]','',classIri)
+#  sparql <-  paste0('SELECT *
+#                  WHERE {
+#                    ?',primaryColName,' a <',classIri,'> .
+#                    ?',primaryColName,' ?p ?value
+#                    FILTER(?p IN (<', propFilter, '>))
+#                  }')
+
   sparql <-  paste0('SELECT *
                   WHERE {
                     ?',primaryColName,' a <',classIri,'> .
+                     VALUES ?p { <', propFilter, '> }
                     ?',primaryColName,' ?p ?value
-                    FILTER(?p IN (<', propFilter, '>))
                   }')
+
 
 #  sparql <-  paste0('SELECT *
 #                  WHERE {

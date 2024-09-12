@@ -1,5 +1,5 @@
 test_that("I can parse a file", {
-  #suppressWarnings(rdfObj <- loadFile(fixTestFilePath('extdata/rhea.ttl')))
+  suppressWarnings(rdfObj <- loadFile(fixTestFilePath('extdata/rhea.ttl')))
   suppressWarnings(rdfObj <- loadFile(fixTestFilePath('extdata/void.rdf')))
   assign('rdfObj', rdfObj, envir = parent.env(environment()))
   expect_equal(names(rdfObj), c('world', 'model', 'storage'))

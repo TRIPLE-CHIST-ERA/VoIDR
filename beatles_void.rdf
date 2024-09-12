@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:void="http://rdfs.org/ns/void#"
+	xmlns:sd="http://www.w3.org/ns/sparql-service-description#"
+	xmlns:void_ext="http://ldf.fi/void-ext#"
+	xmlns:formats="http://www.w3.org/ns/formats/"
+	xmlns:pav="http://purl.org/pav/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+
+<rdf:Description rdf:about="http://example.org/void/">
+	<rdf:type rdf:resource="http://www.w3.org/ns/sparql-service-description#Service"/>
+	<sd:defaultDataset rdf:nodeID="genid-start-30"/>
+	<sd:endpoint rdf:resource="http://example.org/void/"/>
+	<sd:resultFormat rdf:resource="http://www.w3.org/ns/formats/SPARQL_Results_CSV"/>
+	<sd:resultFormat rdf:resource="http://www.w3.org/ns/formats/SPARQL_Results_JSON"/>
+	<sd:resultFormat rdf:resource="http://www.w3.org/ns/formats/N-Triples"/>
+	<sd:resultFormat rdf:resource="http://www.w3.org/ns/formats/RDF_XML"/>
+	<sd:resultFormat rdf:resource="http://www.w3.org/ns/formats/SPARQL_Results_TSV"/>
+	<sd:resultFormat rdf:resource="http://www.w3.org/ns/formats/Turtle"/>
+	<sd:resultFormat rdf:resource="http://www.w3.org/ns/formats/SPARQL_Results_XML"/>
+	<sd:supportedLanguage rdf:resource="http://www.w3.org/ns/sparql-service-description#SPARQL11Query"/>
+	<sd:propertyFeature rdf:resource="http://www.w3.org/ns/sparql-service-description#UnionDefaultGraph"/>
+	<sd:propertyFeature rdf:resource="http://www.w3.org/ns/sparql-service-description#BasicFederatedQuery"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="genid-start-30">
+	<rdf:type rdf:resource="http://www.w3.org/ns/sparql-service-description#Dataset"/>
+	<sd:defaultGraph rdf:nodeID="genid-start-31"/>
+</rdf:Description>
+
+<rdf:Description rdf:nodeID="genid-start-31">
+	<rdf:type rdf:resource="http://www.w3.org/ns/sparql-service-description#Graph"/>
+	<void:distinctObjects rdf:datatype="http://www.w3.org/2001/XMLSchema#long">50</void:distinctObjects>
+	<void_ext:distinctLiterals rdf:datatype="http://www.w3.org/2001/XMLSchema#long">9</void_ext:distinctLiterals>
+	<void_ext:distinctIRIReferenceObjects rdf:datatype="http://www.w3.org/2001/XMLSchema#long">41</void_ext:distinctIRIReferenceObjects>
+	<void:distinctSubjects rdf:datatype="http://www.w3.org/2001/XMLSchema#long">45</void:distinctSubjects>
+	<void_ext:distinctIRIReferenceSubjects rdf:datatype="http://www.w3.org/2001/XMLSchema#long">45</void_ext:distinctIRIReferenceSubjects>
+</rdf:Description>
+
+</rdf:RDF>
