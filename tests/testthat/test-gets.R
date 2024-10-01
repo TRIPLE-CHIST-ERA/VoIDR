@@ -70,4 +70,5 @@ y <- reshape2::dcast(x, Class~p, value.var = 'value', fun.aggregate = function(x
 y <- tidyr::pivot_wider(x, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= ', '))
 
 
-g <- makeOneFunction(cls[1,1], cls[1,2], rdfObj, 'https://sparql.rhea-db.org/sparql')
+g <- makeOneFunction(cls[1,1], cls[1,2], rdfObj, 'http://localhost:7200/repositories/beatles')
+g
