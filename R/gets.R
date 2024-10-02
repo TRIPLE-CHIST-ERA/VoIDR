@@ -21,7 +21,7 @@ where {
   }
   } ')
 
-  rdflib::rdf_query(rdfObj,sparql)
+ suppressWarnings(rdflib::rdf_query(rdfObj,sparql))
 
 }
 

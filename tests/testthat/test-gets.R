@@ -23,6 +23,12 @@ test_that("I can get the instances for one class (needs to connect to a remote e
   expect_s3_class(insts, 'data.frame')
 })
 
+test_that("I can make a package)", {
+
+  f <- makePackage('BeatlesR','extdata/void.rdf','http://localhost:7200/repositories/beatles')
+  expect_true(f)
+})
+
 allEntities <- apply(cls,1, function(x) getEntity(x[1], x[2], rdfObj, 'http://localhost:7200/repositories/beatles'), simplify = FALSE)
 #x <- allEntities[[2]][1:1000,]
 names(allEntities) <- lapply(cls$classIri, function(x)sub('.*[/|#]', '',x))
