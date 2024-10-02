@@ -47,7 +47,7 @@ makePackage <- function(packageName, rdfFile, endpoint){
     funcText <- paste0(n, ' <- ', funcs[[n]])
     cat(funcText, file = paste0(myDir,'/',n, '.R'))
   })
-  suppressWarnings(package.skeleton(name = packageName, list = c(names(funcs), 'expandDf', 'SPARQL_query'), path = myDir, code_files = paste0(myDir, '/', names(funcs), '.R')))
+  suppressWarnings(package.skeleton(name = packageName, path = myDir, code_files = paste0(myDir, '/', names(funcs), '.R')))
   # get the sources for SPARQL_query and expandDF
   lapply(c('expandDF', 'SPARQL_query'), function(fname){
     fsource <- capture.output(print(get(fname, envir = as.environment('package:gomr'))))
