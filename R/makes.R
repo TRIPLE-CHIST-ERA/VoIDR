@@ -1,7 +1,9 @@
 makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL){
   props <- getMethods(unclass(className), voidFile, voidEndpoint , voidGraph )
  # propFilter <- paste(unique(props$propIri), collapse='> <')
-  shortName <- sub('(.*)[/|#]','',classIri) %>% make.names
+  shortName <- sub('(.*)[/|#]','',classIri) %>% make.names %>% sub('\\.+', '_',.)
+
+  #TODO: keep prefixes
 
   #root <- sub('(.*)[/|#].*','\\1',clasIri)
   shortProps <-unique(sub('(.*)[/|#]','', props$propIri))
