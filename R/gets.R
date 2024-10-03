@@ -75,55 +75,29 @@ where {
  }
 }
 
+getDescriptions <- function(type = c('class', 'property'), endpoint){
+  sapply(type, function(x){
+    sparql <- paste0(
+      'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+       PREFIX void: <http://rdfs.org/ns/void#>
+       SELECT DISTINCT
+       ?entity
+       ?label
+      (COALESCE( ?desc_1, ?desc_2) AS ?description )
+      WHERE{
+      ?any void:', type, ' ?entity .
+      ?entity rdfs:comment ?desc_1 .
+      ?entity rdfs:label ?desc_2
+    }')
+    SPARQL_query(endpoint, sparql)
+  }, simplify = FALSE)
+
+#  BIND( CONCAT( "Description of ", REPLACE( STR( ?property ), ".+[#/](\\w+$)", "$1" )) AS ?desc_2 )
+
+}
+
 loadFile <- function(fname){
   rdflib::rdf_parse(fname)
-}
-getEntity <- function(voidName, classIri, voidObj, endpoint){
-
-  mets <- getMethods(voidName, voidObj)
-  propFilter <- paste(unique(mets$propIri), collapse='> <')# some methods appear multiple times (different classTo), hence the unique
-  primaryColName <- sub('.*[/|#]','',classIri)
-#  sparql <-  paste0('SELECT *
-#                  WHERE {
-#                    ?',primaryColName,' a <',classIri,'> .
-#                    ?',primaryColName,' ?p ?value
-#                    FILTER(?p IN (<', propFilter, '>))
-#                  }')
-
-  sparql <-  paste0('SELECT *
-                  WHERE {
-                    ?',primaryColName,' a <',classIri,'> .
-                     VALUES ?p { <', propFilter, '> }
-                    ?',primaryColName,' ?p ?value
-                  }')
-
-
-#  sparql <-  paste0('SELECT *
-#                  WHERE {
-#  {
-#    select ?P
-#    WHERE{
-#      VAULES ?p { <', propFilter, '> }
-#    }
-#  }
-#    ?',primaryColName,' a <',classIri,'> .
-#                    ?',primaryColName,' ?p ?value
-# }
-  #### utilise VALUES
-  cat(sparql)
-  #sparql <-  paste0('SELECT *
-  #                WHERE {
-  #                  ?cpInstance a <',classIri,'> .
-  #                  ?cpInstance ?p ?value
-  #                  FILTER(?p IN (<', propFilter, '>))
-  #                }')
-  long_df <- SPARQL_query(endpoint, sparql)
-  if(is.null(long_df)){
-    return(NULL)
-  }
-  wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= '~~'))
-  colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*[/|#]','',x))
-  return(wide_df)
 }
 
 expandDF <- function(df, sep='~~'){

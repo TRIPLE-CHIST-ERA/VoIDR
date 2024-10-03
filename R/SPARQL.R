@@ -1,7 +1,7 @@
 library( dplyr );
 library( purrr );
 library( jsonlite );
-library( httr ); 
+library( httr );
 library( stringi );
 
 get_SPARQL_prefixes <- function( ns ){
@@ -14,14 +14,14 @@ get_SPARQL_prefixes <- function( ns ){
 }
 
 #' @title Run a SPARQL query
-#' 
-#' @description SPARQL_query() run a SPARQL query, either SELECT, CONSTRUCT or DESCRIBE 
-#' and return the results as a tibble. Returned column names are the same as SPARQL 
+#'
+#' @description SPARQL_query() run a SPARQL query, either SELECT, CONSTRUCT or DESCRIBE
+#' and return the results as a tibble. Returned column names are the same as SPARQL
 #' variables. Detection of column types relies on R built-in methods, not RDF data types.
-#' 
+#'
 #' In the HTTP request, the "application/sparql-results+json" MIME type is used,
-#' which is supported by most SPARQL endpoints. 
-#' 
+#' which is supported by most SPARQL endpoints.
+#'
 #' @param endpoint   URL of SPARQL endpoint.
 #' @param query      SPARQL query as a string.
 #' @param ns         Optional data frame which two first columns are taken for short and long versions of base IRIs.
@@ -32,22 +32,22 @@ get_SPARQL_prefixes <- function( ns ){
 #' @param na.value   Value to replace empty fields.
 #' @param echo       Boolean value to echo the SPARQL query before execution.
 #' @returns          A tibble with the query results or NULL if the query returns nothing.
-#' @seealso          SPARQL_ask() SPARQL_update() 
+#' @seealso          SPARQL_ask() SPARQL_update()
 #' @examples
 #' \donotrun{
-#' SPARQL_query( 
+#' SPARQL_query(
 #'     'https://query.wikidata.org/sparql', '
 #'     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 #'     SELECT ?message
 #'     WHERE{
-#'         wd:Q131303 rdfs:label ?message 
+#'         wd:Q131303 rdfs:label ?message
 #'         FILTER( LANG( ?message ) = 'en' )
 #'     }' )
 #' }
-SPARQL_query <- function( 
-        endpoint, 
-        query, 
-        ns           = tribble( 
+SPARQL_query <- function(
+        endpoint,
+        query,
+        ns           = tribble(
 			~short, ~long,
 			'rdf',  'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
 			'rdfs', 'http://www.w3.org/2000/01/rdf-schema#'
@@ -69,14 +69,14 @@ SPARQL_query <- function(
     }
     start_time <- Sys.time()
     if( use.POST ){
-        r <- POST( 
+        r <- POST(
             endpoint,
             add_headers( Accept = "application/sparql-results+json" ),
-            body = param, 
+            body = param,
             encode = "form"
         );
     } else { # use GET
-        url <- paste0( 
+        url <- paste0(
             endpoint,
             "?",
             paste0(
@@ -87,13 +87,13 @@ SPARQL_query <- function(
                         URLencode( param[[i]], reserved = T ),
                         '&'
                     )
-                }), 
+                }),
                 collapse = ""
             )
         );
-        print(url)
-        r <- GET( 
-            url, 
+#        print(url)
+        r <- GET(
+            url,
             add_headers( Accept = "application/sparql-results+json" )
         );
     }
@@ -108,38 +108,38 @@ SPARQL_query <- function(
         return( NULL )
     }
     # replace missing values in JSON response with explicit NAs
-    buf <- lapply( 
-        unlist( l$head ), 
+    buf <- lapply(
+        unlist( l$head ),
         function( name ){
-            sapply( 
+            sapply(
                 l$results$bindings,
                 function( b ){
                     return(
-                        ifelse( 
+                        ifelse(
                             is.null( b[[name]] ),
                             NA,
                             b[[name]]$value
                         )
                     )
                 }
-                , simplify = T 
+                , simplify = T
             )
         }
     )
-    t <- as_tibble( setNames( buf, unlist( l$head ))) %>% 
+    t <- as_tibble( setNames( buf, unlist( l$head ))) %>%
         type.convert( na.strings=c(""),  as.is=T ); # call built-in type conversion of R
     if( ! is.na( na.value )){
         t <- t %>% replace( is.na(.), na.value );
     }
-    # TODO: fix NAs  
+    # TODO: fix NAs
     if( iri.style == "short" ){
-        return( t %>% 
-            mutate( 
-                across( 
-                    where( is_character ), 
-                    ~ stri_replace_all_regex( 
-                        unlist( . ), 
-                        pattern       = unlist( ns[,2] ), 
+        return( t %>%
+            mutate(
+                across(
+                    where( is_character ),
+                    ~ stri_replace_all_regex(
+                        unlist( . ),
+                        pattern       = unlist( ns[,2] ),
                         replacement   = paste0( unlist( ns[,1] ), ':' ),
                         vectorize_all = F
                     )
@@ -147,29 +147,29 @@ SPARQL_query <- function(
             )
         )
     } else if( iri.style == "mdlink" ){
-        return( t %>% 
-            mutate( 
-                across( 
-                    where( is_character ), 
-                    ~ stri_replace_all_regex( 
-                        unlist( . ), 
+        return( t %>%
+            mutate(
+                across(
+                    where( is_character ),
+                    ~ stri_replace_all_regex(
+                        unlist( . ),
                         pattern     = paste0( '(', unlist( ns[,2] ), ')(\\S+)' ),
                         replacement = paste0( '[', unlist( ns[,1] ), ':$2]($1$2)' ),
-                        vectorize_all = F    
+                        vectorize_all = F
                     )
                 )
             )
         )
     } else if( iri.style == "html" ){
-        return( t %>% 
-            mutate( 
-                across( 
-                    where( is_character ), 
-                    ~ stri_replace_all_regex( 
-                        unlist( . ), 
+        return( t %>%
+            mutate(
+                across(
+                    where( is_character ),
+                    ~ stri_replace_all_regex(
+                        unlist( . ),
                         pattern     = paste0( '(', unlist( ns[,2] ), ')(\\S+)' ),
                         replacement = paste0( '<a href="', unlist( ns[,2] ),'$2">', unlist( ns[,1] ), ':$2</a>' ),
-                        vectorize_all = F    
+                        vectorize_all = F
                     )
                 )
             )
@@ -179,11 +179,11 @@ SPARQL_query <- function(
 }
 
 SPARQL_update <- function(){
-    stop( "not yet implemented" );    
+    stop( "not yet implemented" );
 }
 
 SPARQL_ask <- function(){
-    stop( "not yet implemented" );    
+    stop( "not yet implemented" );
 }
 
 

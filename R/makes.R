@@ -1,7 +1,7 @@
 makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL){
   props <- getMethods(unclass(className), voidFile, voidEndpoint , voidGraph )
  # propFilter <- paste(unique(props$propIri), collapse='> <')
-  shortName <- sub('(.*)[/|#]','',classIri)
+  shortName <- sub('(.*)[/|#]','',classIri) %>% make.names
 
   #root <- sub('(.*)[/|#].*','\\1',clasIri)
   shortProps <-unique(sub('(.*)[/|#]','', props$propIri))
@@ -41,12 +41,13 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
   # restart every time:
   unlink(paste0(tempdir(), '/', packageName), recursive = TRUE)
   myDir <- tempdir()
-  names(funcs) <- paste0('get_',names(funcs))
+  names(funcs) <- paste0('get_',names(funcs)) %>% make.names
   lapply(names(funcs), function(n){
     funcText <- paste0(n, ' <- ', funcs[[n]])
     cat(funcText, file = paste0(myDir,'/',n, '.R'))
   })
-  suppressWarnings(package.skeleton(name = packageName, path = myDir, code_files = paste0(myDir, '/', names(funcs), '.R')))
+
+  package.skeleton(name = packageName, path = myDir, code_files = paste0(myDir, '/', names(funcs), '.R'))
   # get the sources for SPARQL_query and expandDF
   lapply(c('expandDF', 'SPARQL_query'), function(fname){
     fsource <- capture.output(print(get(fname, envir = as.environment('package:gomr'))))

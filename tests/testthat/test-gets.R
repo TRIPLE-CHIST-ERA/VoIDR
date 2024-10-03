@@ -33,9 +33,19 @@ test_that("I can make a package with a void file)", {
 test_that("I can make a package with a void endpoint)", {
 
   f <- makePackage('BeatlesR','http://localhost:7200/repositories/beatles', voidEndpoint  = 'http://localhost:7200/repositories/beatles', voidGraph = 'http://example.org/void')
+  f <- makePackage('UniprotR','https://sparql.uniprot.org', voidEndpoint  = 'https://sparql.uniprot.org')
   expect_true(file.exists(f))
   unlink(f)
 })
+
+test_that("I can get the descriptions)", {
+
+  desc <- getDescriptions(endpoint = 'http://localhost:7200/repositories/beatles')
+  desc <- getDescriptions(endpoint = 'https://sparql.uniprot.org')
+  expect_true(file.exists(f))
+  unlink(f)
+})
+
 
 allEntities <- apply(cls,1, function(x) getEntity(x[1], x[2], rdfObj, 'http://localhost:7200/repositories/beatles'), simplify = FALSE)
 #x <- allEntities[[2]][1:1000,]
