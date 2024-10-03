@@ -23,9 +23,16 @@ test_that("I can get the instances for one class (needs to connect to a remote e
   expect_s3_class(insts, 'data.frame')
 })
 
-test_that("I can make a package)", {
+test_that("I can make a package with a void file)", {
 
-  f <- makePackage('BeatlesR','extdata/void.rdf','http://localhost:7200/repositories/beatles')
+  f <- makePackage('BeatlesR','http://localhost:7200/repositories/beatles', voidFile = 'extdata/void.rdf')
+  expect_true(file.exists(f))
+  unlink(f)
+})
+
+test_that("I can make a package with a void endpoint)", {
+
+  f <- makePackage('BeatlesR','http://localhost:7200/repositories/beatles', voidEndpoint  = 'http://localhost:7200/repositories/beatles', voidGraph = 'http://example.org/void')
   expect_true(file.exists(f))
   unlink(f)
 })

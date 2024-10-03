@@ -1,5 +1,5 @@
-makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidEnpoint = NULL, voidGraph = NULL){
-  props <- getMethods(unclass(className), voidFile)
+makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL){
+  props <- getMethods(unclass(className), voidFile, voidEndpoint , voidGraph )
  # propFilter <- paste(unique(props$propIri), collapse='> <')
   shortName <- sub('(.*)[/|#]','',classIri)
 
@@ -33,11 +33,10 @@ makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidE
   return(ret)
 }
 
-makePackage <- function(packageName, rdfFile, endpoint, authors = 'person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))', license = NULL, dest_path = '.'){
-  rdfObj <- loadFile(fixTestFilePath(rdfFile))
-  cls <- getClasses(rdfObj)
+makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL, authors = 'person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))', license = NULL, dest_path = '.'){
+  cls <- getClasses(voidFile,voidEndpoint, voidGraph)
   funcs <- apply(cls,1, function(x){
-    makeOneFunction(x[1], x[2], endpoint, voidFile = rdfFile)
+    makeOneFunction(x[1], x[2], endpoint, voidFile, voidEndpoint, voidGraph)
   }) %>% unlist(recursive = FALSE)
   # restart every time:
   unlink(paste0(tempdir(), '/', packageName), recursive = TRUE)
@@ -52,14 +51,15 @@ makePackage <- function(packageName, rdfFile, endpoint, authors = 'person("Iulia
   lapply(c('expandDF', 'SPARQL_query'), function(fname){
     fsource <- capture.output(print(get(fname, envir = as.environment('package:gomr'))))
     fsource[1] <- paste0(fname, ' <- ',fsource[1])
-    # without the last line
-    cat(fsource[-length(fsource)], file = paste0(myDir,'/', packageName,'/R/',fname,'.R'), sep ="\n")
+    # without the lines starting with "<" (meta package rubbish)
+    cat(fsource[grep('^<', fsource, invert = TRUE)], file = paste0(myDir,'/', packageName,'/R/',fname,'.R'), sep ="\n")
   })
   # DESCRIPTION
   desc <- readLines(fixTestFilePath('./extdata/DESCRIPTION'))
   desc[1] <- paste0(desc[1],' ', packageName)
   desc[5] <- paste0(desc[5],' ', Sys.Date())
   desc[6] <- paste0('Authors@R: ', authors)
+  desc[7] <- sub('<endpoint>', endpoint, desc[7])
   if(!is.null(license)){
     desc[9] <- paste0(desc[9],' ', license)
   }

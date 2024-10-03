@@ -32,7 +32,7 @@ where {
   }
   } ')
  if(!is.null(voidEndpoint)){
-   return(SPARQL_query(voidEndpoint, sparql))
+   voidEndpoint %>% SPARQL_query(sparql) %>% return
  } else {
    voidFile %>% fixTestFilePath %>% loadFile %>% rdflib::rdf_query(sparql) %>% return
  }
@@ -43,24 +43,20 @@ getInstances <- function(classIri, endpoint){
   SPARQL_query(endpoint, sparql)
 }
 
-getClasses <- function(rdfObj){
-# sparql <- 'PREFIX sh:<http://www.w3.org/ns/shacl#>
-#  PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
-#  PREFIX void:<http://rdfs.org/ns/void#>
-#  PREFIX void_ext:<http://ldf.fi/void-ext#>
-#  SELECT  ?cp1 ?classIri
-#  WHERE {
-#    ?graphIri sd:graph ?graph .
-#    ?s sd:graph ?graph .
-#    ?graph void:classPartition ?cp1 .
-#    ?cp1 void:class ?classIri.
-#  }'
-
- sparql <- paste0('PREFIX sh:<http://www.w3.org/ns/shacl#>
+getClasses <- function(voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL){
+  # only one of voidFile and voidEndpoint; favour voidEndpoint
+  if(is.null(voidEndpoint)){
+    voidGraph <- NULL
+  }
+ sparql <- 'PREFIX sh:<http://www.w3.org/ns/shacl#>
 PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
 PREFIX void:<http://rdfs.org/ns/void#>
 PREFIX void_ext:<http://ldf.fi/void-ext#>
-SELECT DISTINCT ?voidName,  ?classIri
+SELECT DISTINCT ?voidName  ?classIri '
+ if(!is.null(voidGraph)){
+   sparql <- paste0(sparql, 'FROM <', voidGraph, '> ')
+ }
+ sparql <- paste0(sparql, '
 where {
   ?voidName void:class ?classIri .
   ?voidName void:propertyPartition ?pp1 .
@@ -72,7 +68,11 @@ where {
   }
   } ')
 
- rdflib::rdf_query(rdfObj, sparql)
+ if(!is.null(voidEndpoint)){
+   voidEndpoint %>% SPARQL_query(sparql) %>% return
+ } else {
+   voidFile %>% fixTestFilePath %>% loadFile %>% rdflib::rdf_query(sparql) %>% return
+ }
 }
 
 loadFile <- function(fname){
