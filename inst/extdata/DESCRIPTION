@@ -1,0 +1,9 @@
+Package:
+Type: Package
+Title: Load data from a SPARQL endpoint
+Version: 1.0
+Date:
+Authors@R: person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))
+Description: Extract and structure datasets from the SPARQL enpoint <endpoint> 
+License: 
+Depends: dplyr, purrr, jsonlite, httr, stringi

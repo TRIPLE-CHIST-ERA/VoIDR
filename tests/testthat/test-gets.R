@@ -26,7 +26,8 @@ test_that("I can get the instances for one class (needs to connect to a remote e
 test_that("I can make a package)", {
 
   f <- makePackage('BeatlesR','extdata/void.rdf','http://localhost:7200/repositories/beatles')
-  expect_true(f)
+  expect_true(file.exists(f))
+  unlink(f)
 })
 
 allEntities <- apply(cls,1, function(x) getEntity(x[1], x[2], rdfObj, 'http://localhost:7200/repositories/beatles'), simplify = FALSE)

@@ -1,9 +1,20 @@
-getMethods <- function(className, rdfObj){
-  sparql <-  paste0('PREFIX sh:<http://www.w3.org/ns/shacl#>
+
+
+getMethods <- function(className, voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL){
+  # only one of voidFile and voidEndpoint; favour voidEndpoint
+ if(is.null(voidEndpoint)){
+   voidGraph <- NULL
+ }
+
+sparql <-  'PREFIX sh:<http://www.w3.org/ns/shacl#>
 PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
 PREFIX void:<http://rdfs.org/ns/void#>
 PREFIX void_ext:<http://ldf.fi/void-ext#>
-SELECT DISTINCT  ?propIri ?datatypeTo ?classTo ?classFrom
+SELECT DISTINCT  ?propIri ?datatypeTo ?classTo ?classFrom '
+if(!is.null(voidGraph)){
+  sparql <- paste0(sparql, 'FROM <', voidGraph, '> ')
+}
+sparql <- paste0(sparql, '
 where {
   bind (<', className, '> as ?cp1)
   ?cp1 void:class ?classFrom .
@@ -20,9 +31,11 @@ where {
     ?cp3 void:class ?classTo .
   }
   } ')
-
- suppressWarnings(rdflib::rdf_query(rdfObj,sparql))
-
+ if(!is.null(voidEndpoint)){
+   return(SPARQL_query(voidEndpoint, sparql))
+ } else {
+   voidFile %>% fixTestFilePath %>% loadFile %>% rdflib::rdf_query(sparql) %>% return
+ }
 }
 
 getInstances <- function(classIri, endpoint){

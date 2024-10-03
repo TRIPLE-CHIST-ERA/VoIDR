@@ -1,5 +1,5 @@
-makeOneFunction <- function(className,classIri,  rdfObj, endpoint){
-  props <- getMethods(unclass(className), rdfObj)
+makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidEnpoint = NULL, voidGraph = NULL){
+  props <- getMethods(unclass(className), voidFile)
  # propFilter <- paste(unique(props$propIri), collapse='> <')
   shortName <- sub('(.*)[/|#]','',classIri)
 
@@ -12,7 +12,7 @@ makeOneFunction <- function(className,classIri,  rdfObj, endpoint){
   func <- paste0("function(properties = c(\"", paste(shortProps,collapse='", "'),"\")){
     propDict <- list()
     propDict[c(\"",paste(shortProps,collapse='", "'),"\")] <- c(\"", paste(unique(props$propIri),collapse='", "'),"\")
-    propFilter <- paste(unique(propDict[properties]), collapse='> <')
+    propFilter <- paste(propDict[properties], collapse='> <')
     sparql <-  paste0('SELECT *
                   WHERE {
                     ?",shortName, " a <',\"", classIri, "\",'> .
@@ -33,11 +33,11 @@ makeOneFunction <- function(className,classIri,  rdfObj, endpoint){
   return(ret)
 }
 
-makePackage <- function(packageName, rdfFile, endpoint){
+makePackage <- function(packageName, rdfFile, endpoint, authors = 'person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))', license = NULL, dest_path = '.'){
   rdfObj <- loadFile(fixTestFilePath(rdfFile))
   cls <- getClasses(rdfObj)
   funcs <- apply(cls,1, function(x){
-    makeOneFunction(x[1], x[2], rdfObj, endpoint)
+    makeOneFunction(x[1], x[2], endpoint, voidFile = rdfFile)
   }) %>% unlist(recursive = FALSE)
   # restart every time:
   unlink(paste0(tempdir(), '/', packageName), recursive = TRUE)
@@ -53,10 +53,21 @@ makePackage <- function(packageName, rdfFile, endpoint){
     fsource <- capture.output(print(get(fname, envir = as.environment('package:gomr'))))
     fsource[1] <- paste0(fname, ' <- ',fsource[1])
     # without the last line
-    cat(fsource[-length(fsource)], file=paste0(myDir,'/', packageName,'/R/',fname,'.R'), sep ="\n")
+    cat(fsource[-length(fsource)], file = paste0(myDir,'/', packageName,'/R/',fname,'.R'), sep ="\n")
   })
-  ##TODO DESCRIPTION AND NAMESPACE
-  return(TRUE)
+  # DESCRIPTION
+  desc <- readLines(fixTestFilePath('./extdata/DESCRIPTION'))
+  desc[1] <- paste0(desc[1],' ', packageName)
+  desc[5] <- paste0(desc[5],' ', Sys.Date())
+  desc[6] <- paste0('Authors@R: ', authors)
+  if(!is.null(license)){
+    desc[9] <- paste0(desc[9],' ', license)
+  }
+  cat(desc, file = paste0(myDir,'/', packageName,'/DESCRIPTION'), sep ="\n")
+  # NAMESPACE
+  cat('export("expandDF")', file = paste0(myDir,'/', packageName,'/NAMESPACE'), append = TRUE)
+  unlink(paste0(myDir,'/', packageName, '/Read-and-delete-me'))
+  paste0(myDir,'/', packageName) %>% devtools::build(path = dest_path) %>% return
 }
 
 
