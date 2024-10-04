@@ -52,7 +52,7 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
   package.skeleton(name = packageName, path = myDir, code_files = paste0(myDir, '/', names(funcs), '.R'))
   # get the sources for SPARQL_query and expandDF
   lapply(c('expandDF', 'SPARQL_query'), function(fname){
-    fsource <- capture.output(print(get(fname, envir = as.environment('package:gomr'))))
+    fsource <- capture.output(print(get(fname, envir = as.environment('package:VoIDR'))))
     fsource[1] <- paste0(fname, ' <- ',fsource[1])
     # without the lines starting with "<" (meta package rubbish)
     cat(fsource[grep('^<', fsource, invert = TRUE)], file = paste0(myDir,'/', packageName,'/R/',fname,'.R'), sep ="\n")

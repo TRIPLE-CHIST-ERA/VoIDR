@@ -1,0 +1,12 @@
+PREFIX up: <http://purl.uniprot.org/core/>
+select ?prot ?p ( GROUP_CONCAT( STR( ?o ); SEPARATOR=";" ) AS ?value )
+where {
+	?prot a up:Protein ;
+    	?p ?o 
+    FILTER( isLITERAL( ?o ))
+}
+GROUP BY ?prot ?p 
+
+
+curl --output ${RECONXKG_TMP}/swissprot_human.ttl.gz 'https://rest.uniprot.org/uniprotkb/stream?compressed=true&format=ttl&query=%28organism_id%3A9606%29+AND+%28reviewed%3Atrue%29'
+
