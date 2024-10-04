@@ -7,12 +7,14 @@ test_that("I can parse a file", {
 
 test_that("I can get the class names", {
   suppressWarnings(cls <- getClasses(rdfObj))
+  cls <- getClasses(voidEndpoint = 'https://sparql.uniprot.org')
   assign('cls', cls, envir = parent.env(environment()))
   expect_s3_class(cls, 'data.frame')
 })
 
 test_that("I can get the methods for one class", {
   suppressWarnings(mets <- getMethods(cls$voidName[1], rdfObj))
+  mets <- getMethods(className = 'https://sparql.uniprot.org/.well-known/void#uniprot!External_Sequence', voidEndpoint = 'https://sparql.uniprot.org')
   expect_s3_class(mets, 'data.frame')
 })
 
@@ -32,7 +34,7 @@ test_that("I can make a package with a void file)", {
 
 test_that("I can make a package with a void endpoint)", {
 
-  f <- makePackage('BeatlesR','http://localhost:7200/repositories/beatles', voidEndpoint  = 'http://localhost:7200/repositories/beatles', voidGraph = 'http://example.org/void')
+  #f <- makePackage('BeatlesR','http://localhost:7200/repositories/beatles', voidEndpoint  = 'http://localhost:7200/repositories/beatles', voidGraph = 'http://example.org/void')
   f <- makePackage('UniprotR','https://sparql.uniprot.org', voidEndpoint  = 'https://sparql.uniprot.org')
   expect_true(file.exists(f))
   unlink(f)
@@ -40,8 +42,9 @@ test_that("I can make a package with a void endpoint)", {
 
 test_that("I can get the descriptions)", {
 
-  desc <- getDescriptions(endpoint = 'http://localhost:7200/repositories/beatles')
-  desc <- getDescriptions(endpoint = 'https://sparql.uniprot.org')
+  #desc <- getDescriptions(endpoint = 'http://localhost:7200/repositories/beatles')
+  desc <- getDescriptions(filters = list(class = 'http://purl.uniprot.org/core/Book_Citation'), endpoint = 'https://sparql.uniprot.org')
+  desc <- getDescriptions(filters = list(class = 'http://purl.uniprot.org/core/Book_Citation', property = mets$propIri), endpoint = 'https://sparql.uniprot.org')
   expect_true(file.exists(f))
   unlink(f)
 })

@@ -11,7 +11,7 @@ makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidE
 #  propDict <- list()
 #  propDict[unique(shortProps)] <- unique(props$propIri)
 
-  func <- paste0("function(properties = c(\"", paste(shortProps,collapse='", "'),"\")){
+  func <- paste0("function(properties = c(\"", paste(shortProps,collapse='", "'),"\"), limit = 1000){
     propDict <- list()
     propDict[c(\"",paste(shortProps,collapse='", "'),"\")] <- c(\"", paste(unique(props$propIri),collapse='", "'),"\")
     propFilter <- paste(propDict[properties], collapse='> <')
@@ -21,6 +21,9 @@ makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidE
                      VALUES ?p { <', propFilter, '> }
                     ?",shortName, " ?p ?value
                   }')
+    if(!is.null(limit)){
+      sparql <- paste0(sparql, ' LIMIT ', limit)
+    }
     long_df <- SPARQL_query('",endpoint,"', sparql)
     if(is.null(long_df)){
       return(NULL)
@@ -30,8 +33,12 @@ makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidE
     return(wide_df)
 
   }")
+  doc <- getDescriptions(filter = list(class = classIri, property = paste(unique(props$propIri), collapse='> <')), endpoint)
+  funcDoc <- doc$class$description
+  propDoc <- doc$property
+  doc$property$entity <- sub('(.*)[/|#]','',doc$property$entity)
   ret <- list()
-  ret[[shortName]] <- func
+  ret[[shortName]] <- list(func = func, funcDoc = funcDoc, propDoc = propDoc)
   return(ret)
 }
 
@@ -40,13 +47,28 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
   funcs <- apply(cls,1, function(x){
     makeOneFunction(x[1], x[2], endpoint, voidFile, voidEndpoint, voidGraph)
   }) %>% unlist(recursive = FALSE)
+  assign('funcs', funcs, envir = .GlobalEnv)
   # restart every time:
   unlink(paste0(tempdir(), '/', packageName), recursive = TRUE)
   myDir <- tempdir()
   names(funcs) <- paste0('get_',names(funcs)) %>% make.names
   lapply(names(funcs), function(n){
-    funcText <- paste0(n, ' <- ', funcs[[n]])
-    cat(funcText, file = paste0(myDir,'/',n, '.R'))
+    print(n)
+    fileName <- paste0(myDir,'/',n, '.R')
+    cat(paste0("#' @title ", n, "\n"), file = fileName)
+    if(is.null(funcs[[n]]$funcDoc)){
+      funcs[[n]]$funcDoc <- n
+    }
+    cat(paste0("#' @description ", gsub("\n+", " ",funcs[[n]]$funcDoc), "\n"), file = fileName, append = TRUE)
+    cat("#' @param properties a character vector, which properties of this class should be loaded. Properties will become columns of the result set.\n", file = fileName, append = TRUE)
+    if(!is.null(funcs[[n]]$propDoc)){
+      apply(funcs[[n]]$propDoc, 1,  function(this.prop){
+        cat(paste0("#'    * ",this.prop['entity'], " -- ", gsub("\n+", " ", this.prop['description']), "\n"), file = fileName, append = TRUE)
+      })
+    }
+    cat("#' @param limit a numeric, how many lines to fetch, default 1000. If null, all the lines will be fetched.\n", file = fileName, append = TRUE)
+    funcText <- paste0(n, ' <- ', funcs[[n]]$func)
+    cat(funcText, file = fileName, append = TRUE)
   })
 
   package.skeleton(name = packageName, path = myDir, code_files = paste0(myDir, '/', names(funcs), '.R'))
@@ -70,7 +92,10 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
   # NAMESPACE
   cat('export("expandDF")', file = paste0(myDir,'/', packageName,'/NAMESPACE'), append = TRUE)
   unlink(paste0(myDir,'/', packageName, '/Read-and-delete-me'))
+  unlink(paste0(myDir,'/', packageName, '/man/*'))
+  devtools::document(pkg = paste0(myDir,'/', packageName))
   paste0(myDir,'/', packageName) %>% devtools::build(path = dest_path) %>% return
+
 }
 
 

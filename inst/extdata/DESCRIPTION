@@ -7,3 +7,4 @@ Authors@R: person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = 
 Description: Extract and structure datasets from the SPARQL enpoint <endpoint> 
 License: 
 Depends: dplyr, purrr, jsonlite, httr, stringi
+Encoding: UTF-8
