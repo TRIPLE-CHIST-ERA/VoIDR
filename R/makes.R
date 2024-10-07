@@ -22,7 +22,7 @@ makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidE
                     ?",shortName, " ?p ?value
                   }')
     if(!is.null(limit)){
-      sparql <- paste0(sparql, ' LIMIT ', limit)
+      sparql <- paste0(sparql, ' LIMIT ', as.integer(limit))
     }
     long_df <- SPARQL_query('",endpoint,"', sparql)
     if(is.null(long_df)){
@@ -62,11 +62,13 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
     cat(paste0("#' @description ", gsub("\n+", " ",funcs[[n]]$funcDoc), "\n"), file = fileName, append = TRUE)
     cat("#' @param properties a character vector, which properties of this class should be loaded. Properties will become columns of the result set.\n", file = fileName, append = TRUE)
     if(!is.null(funcs[[n]]$propDoc)){
+      funcs[[n]]$propDoc$entity  <- sub('(.*)[/|#]','',funcs[[n]]$propDoc$entity ) # shorten
       apply(funcs[[n]]$propDoc, 1,  function(this.prop){
-        cat(paste0("#'    * ",this.prop['entity'], " -- ", gsub("\n+", " ", this.prop['description']), "\n"), file = fileName, append = TRUE)
+        cat(paste0("#'  * ",this.prop['entity'], " -- ", gsub("\n+", " ", this.prop['description']), "\n"), file = fileName, append = TRUE)
       })
+      cat(paste0("#' @md\n"), file = fileName, append = TRUE)
     }
-    cat("#' @param limit a numeric, how many lines to fetch, default 1000. If null, all the lines will be fetched.\n", file = fileName, append = TRUE)
+    cat("#' @param limit a numeric, how many triples to fetch, default 1000. If null, all the triples will be fetched.\n", file = fileName, append = TRUE)
     funcText <- paste0(n, ' <- ', funcs[[n]]$func)
     cat(funcText, file = fileName, append = TRUE)
   })
