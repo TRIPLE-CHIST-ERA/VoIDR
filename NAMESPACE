@@ -1,1 +1,1 @@
-export('makePackage','expandDF', 'SPARQL_query', 'fixTestFilePath')
+export('makePackage','expandDF', 'SPARQL_query')

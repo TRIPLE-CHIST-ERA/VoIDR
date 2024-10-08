@@ -1,5 +1,6 @@
 devtools::install_github('TRIPLE-CHIST-ERA/VoIDR')
 library(VoIDR)
+
 makePackage('UniprotR','https://sparql.uniprot.org', voidEndpoint  = 'https://sparql.uniprot.org')
 
 
