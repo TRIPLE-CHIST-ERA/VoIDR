@@ -1,14 +1,13 @@
 Package: VoIDR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: R package creator
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))
+Description: Create specific packages for SPARQL endpoints.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
+Depends: dplyr, purrr, jsonlite, httr, stringi
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
