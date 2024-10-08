@@ -82,7 +82,8 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
     cat(fsource[grep('^<', fsource, invert = TRUE)], file = paste0(myDir,'/', packageName,'/R/',fname,'.R'), sep ="\n")
   })
   # DESCRIPTION
-  desc <- readLines(fixTestFilePath('./extdata/DESCRIPTION'))
+  #desc <- readLines(fixTestFilePath('./extdata/DESCRIPTION'))
+  desc <- system.file('extdata', 'DESCRIPTION', package='VoIDR')
   desc[1] <- paste0(desc[1],' ', packageName)
   desc[5] <- paste0(desc[5],' ', Sys.Date())
   desc[6] <- paste0('Authors@R: ', authors)
