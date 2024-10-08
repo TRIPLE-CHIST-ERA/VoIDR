@@ -1,1 +1,1 @@
-export('makePackage')
+export(c('makePackage','expandDF'))
