@@ -83,7 +83,7 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
   })
   # DESCRIPTION
   #desc <- readLines(fixTestFilePath('./extdata/DESCRIPTION'))
-  desc <- system.file('extdata', 'DESCRIPTION', package='VoIDR')
+  desc <- readLines(system.file('extdata', 'DESCRIPTION', package='VoIDR'))
   desc[1] <- paste0(desc[1],' ', packageName)
   desc[5] <- paste0(desc[5],' ', Sys.Date())
   desc[6] <- paste0('Authors@R: ', authors)
