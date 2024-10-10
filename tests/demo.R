@@ -2,7 +2,7 @@ devtools::install_github('TRIPLE-CHIST-ERA/VoIDR')
 library(VoIDR)
 
 makePackage('UniprotR','https://sparql.uniprot.org', voidEndpoint  = 'https://sparql.uniprot.org')
-install.packages('UniprotR_1.0.tar.gz')
+install.packages('./UniprotR_1.0.tar.gz')
 
 library(UniprotR)
 ?get_Database
@@ -17,4 +17,5 @@ u <- dplyr::inner_join(w,z)
 
 ?get_Interaction()
 x <- get_Interaction('participant')
+x
 expandDF(x)

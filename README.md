@@ -1,1 +1,1 @@
- # *g*raph *o*bject *m*apping in *r*
+ # VoID endpoint R package generator
