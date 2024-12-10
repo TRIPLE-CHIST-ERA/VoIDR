@@ -1,0 +1,570 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix : <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void_ext: <http://ldf.fi/void-ext#> .
+@prefix formats: <http://www.w3.org/ns/formats/> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://localhost:7200/repositories/beatles> a :Service;
+  :defaultDataset <http://localhost:7200/repositories/beatles#sparql-default-dataset>;
+  :endpoint <http://localhost:7200/repositories/beatles>;
+  :resultFormat formats:SPARQL_Results_CSV, formats:SPARQL_Results_JSON, formats:N-Triples,
+    formats:RDF_XML, formats:SPARQL_Results_TSV, formats:Turtle, formats:SPARQL_Results_XML;
+  :supportedLanguage :SPARQL11Query;
+  :feature :UnionDefaultGraph, :BasicFederatedQuery;
+  :availableGraphs _:71b9f31d537e4d95ba899e6ae02c08b039 .
+
+<http://localhost:7200/repositories/beatles#sparql-default-dataset> a :Dataset;
+  :defaultGraph <http://example.org/void#sparql-default-graph>;
+  :namedGraph <http://rdf.example.org/context/MUSIC> .
+
+<http://example.org/void#sparql-default-graph> a :Graph;
+  void:triples "41107"^^xsd:long;
+  void:distinctObjects "21113"^^xsd:long;
+  void_ext:distinctLiterals "15041"^^xsd:long;
+  void_ext:distinctIRIReferenceObjects "6072"^^xsd:long;
+  void:distinctSubjects "7087"^^xsd:long;
+  void_ext:distinctIRIReferenceSubjects "7087"^^xsd:long .
+
+_:71b9f31d537e4d95ba899e6ae02c08b039 :namedGraph <http://rdf.example.org/context/MUSIC> .
+
+<http://rdf.example.org/context/MUSIC> a :NamedGraph;
+  :name <http://rdf.example.org/context/MUSIC>;
+  :graph <http://example.org/void#_graph_MUSIC!ef4e4c32>;
+  void:subset <http://example.org/void#linkset_330d68c3>, <http://example.org/void#linkset_34b5cf54>,
+    <http://example.org/void#linkset_2c3b2599>, <http://example.org/void#linkset_11a2e8c0>,
+    <http://example.org/void#linkset_295eedec>, <http://example.org/void#linkset_3485b5b6>,
+    <http://example.org/void#linkset_5dd3bd18>, <http://example.org/void#linkset_2a0ed76a>,
+    <http://example.org/void#linkset_cbd83cf5>, <http://example.org/void#linkset_6da769c0>,
+    <http://example.org/void#linkset_004f6a59>, <http://example.org/void#linkset_71b18133>,
+    <http://example.org/void#linkset_0c1faa97>, <http://example.org/void#linkset_022671ab>,
+    <http://example.org/void#linkset_905420e5>, <http://example.org/void#linkset_b77cbe18>,
+    <http://example.org/void#linkset_2e9cc91d>, <http://example.org/void#linkset_5c49e304>,
+    <http://example.org/void#linkset_36731363>, <http://example.org/void#linkset_1cf83082>,
+    <http://example.org/void#linkset_402dde63>, <http://example.org/void#linkset_04d79374> .
+
+<http://example.org/void#_graph_MUSIC!ef4e4c32> a :Graph;
+  void:triples "41107"^^xsd:long;
+  void:classes "7"^^xsd:long;
+  void:classPartition <http://example.org/void#MUSIC!3fb6ff86!Dataset>, <http://example.org/void#MUSIC!386e9010!Album>,
+    <http://example.org/void#MUSIC!b9bb0a71!Band>, <http://example.org/void#MUSIC!56bd5c67!Producer>,
+    <http://example.org/void#MUSIC!ed91ca2a!SoloArtist>, <http://example.org/void#MUSIC!85693790!Song>,
+    <http://example.org/void#MUSIC!62242dd9!Songwriter>;
+  void:propertyPartition <http://example.org/void#MUSIC!5fc0311a!has_sha256>, <http://example.org/void#MUSIC!3e2f60da!modified>,
+    <http://example.org/void#MUSIC!4c6fe9ae!dataDump>, <http://example.org/void#MUSIC!3a190925!distinctObjects>,
+    <http://example.org/void#MUSIC!a7c4971a!distinctSubjects>, <http://example.org/void#MUSIC!35ff777c!properties>,
+    <http://example.org/void#MUSIC!b5b09137!triples>, <http://example.org/void#MUSIC!43a9f9e9!artist>,
+    <http://example.org/void#MUSIC!ee1dab16!date>, <http://example.org/void#MUSIC!c319beef!description>,
+    <http://example.org/void#MUSIC!11a39c66!length>, <http://example.org/void#MUSIC!b988c8c9!member>,
+    <http://example.org/void#MUSIC!1c11f371!name>, <http://example.org/void#MUSIC!21ebb620!producer>,
+    <http://example.org/void#MUSIC!777aa530!track>, <http://example.org/void#MUSIC!e4cae33b!writer>,
+    <http://example.org/void#MUSIC!c74e2b73!type>;
+  void:distinctObjects "15038"^^xsd:long;
+  void_ext:distinctLiterals "15038"^^xsd:long .
+
+<http://example.org/void#MUSIC!3fb6ff86!Dataset> a void:Dataset;
+  void:class void:Dataset;
+  void:entities "1"^^xsd:long;
+  void:propertyPartition <http://example.org/voidMUSIC!ad93bf1c!-Dataset-has_sha256>,
+    <http://example.org/voidMUSIC!5b4f46f5!-Dataset-modified>, <http://example.org/voidMUSIC!27e8d178!-Dataset-dataDump>,
+    <http://example.org/voidMUSIC!1abbf6dd!-Dataset-distinctObjects>, <http://example.org/voidMUSIC!c83d8d81!-Dataset-distinctSubjects>,
+    <http://example.org/voidMUSIC!3f075707!-Dataset-properties>, <http://example.org/voidMUSIC!0cffff13!-Dataset-triples> .
+
+<http://example.org/voidMUSIC!ad93bf1c!-Dataset-has_sha256> a void:Dataset;
+  void:property <http://example.org/has_sha256>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!04c9b1d1!-has_sha256-string>;
+  void:triples "1"^^xsd:long .
+
+<http://example.org/voidMUSIC!04c9b1d1!-has_sha256-string> a void:Dataset;
+  void_ext:datatype xsd:string .
+
+<http://example.org/voidMUSIC!5b4f46f5!-Dataset-modified> a void:Dataset;
+  void:property dcterms:modified;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!88e5ca37!-modified-dateTime>;
+  void:triples "1"^^xsd:long .
+
+<http://example.org/voidMUSIC!88e5ca37!-modified-dateTime> a void:Dataset;
+  void_ext:datatype xsd:dateTime .
+
+<http://example.org/voidMUSIC!27e8d178!-Dataset-dataDump> a void:Dataset;
+  void:property void:dataDump;
+  void:triples "1"^^xsd:long .
+
+<http://example.org/voidMUSIC!1abbf6dd!-Dataset-distinctObjects> a void:Dataset;
+  void:property void:distinctObjects;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!d3cabb5e!-distinctObjects-integer>;
+  void:triples "1"^^xsd:long .
+
+<http://example.org/voidMUSIC!d3cabb5e!-distinctObjects-integer> a void:Dataset;
+  void_ext:datatype xsd:integer .
+
+<http://example.org/voidMUSIC!c83d8d81!-Dataset-distinctSubjects> a void:Dataset;
+  void:property void:distinctSubjects;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!31cd41bd!-distinctSubjects-integer>;
+  void:triples "1"^^xsd:long .
+
+<http://example.org/voidMUSIC!31cd41bd!-distinctSubjects-integer> a void:Dataset;
+  void_ext:datatype xsd:integer .
+
+<http://example.org/voidMUSIC!3f075707!-Dataset-properties> a void:Dataset;
+  void:property void:properties;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!0b61d9eb!-properties-integer>;
+  void:triples "1"^^xsd:long .
+
+<http://example.org/voidMUSIC!0b61d9eb!-properties-integer> a void:Dataset;
+  void_ext:datatype xsd:integer .
+
+<http://example.org/voidMUSIC!0cffff13!-Dataset-triples> a void:Dataset;
+  void:property void:triples;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!dd38e2f1!-triples-integer>;
+  void:triples "1"^^xsd:long .
+
+<http://example.org/voidMUSIC!dd38e2f1!-triples-integer> a void:Dataset;
+  void_ext:datatype xsd:integer .
+
+<http://example.org/void#MUSIC!386e9010!Album> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Album>;
+  void:entities "1037"^^xsd:long;
+  void:propertyPartition <http://example.org/voidMUSIC!ff68cccf!-Album-artist>, <http://example.org/voidMUSIC!a3f6060a!-Album-date>,
+    <http://example.org/voidMUSIC!6a4e2287!-Album-description>, <http://example.org/voidMUSIC!8345f5ff!-Album-name>,
+    <http://example.org/voidMUSIC!0b7dad08!-Album-producer>, <http://example.org/voidMUSIC!9d8e0c19!-Album-track> .
+
+<http://example.org/voidMUSIC!ff68cccf!-Album-artist> a void:Dataset;
+  void:property <http://stardog.com/tutorial/artist>;
+  void:classPartition <http://example.org/voidMUSIC!3aff5590!-Album-artist-Band>, <http://example.org/voidMUSIC!20b00dc4!-Album-artist-Producer>,
+    <http://example.org/voidMUSIC!d9d83266!-Album-artist-SoloArtist>, <http://example.org/voidMUSIC!590f8250!-Album-artist-Songwriter>;
+  void:triples "1039"^^xsd:long .
+
+<http://example.org/voidMUSIC!3aff5590!-Album-artist-Band> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Band>;
+  void:triples "403"^^xsd:long .
+
+<http://example.org/voidMUSIC!20b00dc4!-Album-artist-Producer> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Producer>;
+  void:triples "786"^^xsd:long .
+
+<http://example.org/voidMUSIC!d9d83266!-Album-artist-SoloArtist> a void:Dataset;
+  void:class <http://stardog.com/tutorial/SoloArtist>;
+  void:triples "604"^^xsd:long .
+
+<http://example.org/voidMUSIC!590f8250!-Album-artist-Songwriter> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Songwriter>;
+  void:triples "708"^^xsd:long .
+
+<http://example.org/void#linkset_330d68c3> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/artist>;
+  void:subjectsTarget <http://example.org/void#MUSIC!386e9010!Album>;
+  void:objectsTarget <http://example.org/void#MUSIC!b9bb0a71!Band> .
+
+<http://example.org/void#linkset_34b5cf54> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/artist>;
+  void:subjectsTarget <http://example.org/void#MUSIC!386e9010!Album>;
+  void:objectsTarget <http://example.org/void#MUSIC!56bd5c67!Producer> .
+
+<http://example.org/void#linkset_2c3b2599> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/artist>;
+  void:subjectsTarget <http://example.org/void#MUSIC!386e9010!Album>;
+  void:objectsTarget <http://example.org/void#MUSIC!ed91ca2a!SoloArtist> .
+
+<http://example.org/void#linkset_11a2e8c0> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/artist>;
+  void:subjectsTarget <http://example.org/void#MUSIC!386e9010!Album>;
+  void:objectsTarget <http://example.org/void#MUSIC!62242dd9!Songwriter> .
+
+<http://example.org/voidMUSIC!a3f6060a!-Album-date> a void:Dataset;
+  void:property <http://stardog.com/tutorial/date>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!e27f8821!-date-date>;
+  void:triples "1113"^^xsd:long .
+
+<http://example.org/voidMUSIC!e27f8821!-date-date> a void:Dataset;
+  void_ext:datatype xsd:date .
+
+<http://example.org/voidMUSIC!6a4e2287!-Album-description> a void:Dataset;
+  void:property <http://stardog.com/tutorial/description>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!a58f203d!-description-string>;
+  void:triples "1037"^^xsd:long .
+
+<http://example.org/voidMUSIC!a58f203d!-description-string> a void:Dataset;
+  void_ext:datatype xsd:string .
+
+<http://example.org/voidMUSIC!8345f5ff!-Album-name> a void:Dataset;
+  void:property <http://stardog.com/tutorial/name>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!75c4ea3f!-name-string>;
+  void:triples "1036"^^xsd:long .
+
+<http://example.org/voidMUSIC!75c4ea3f!-name-string> a void:Dataset;
+  void_ext:datatype xsd:string .
+
+<http://example.org/voidMUSIC!0b7dad08!-Album-producer> a void:Dataset;
+  void:property <http://stardog.com/tutorial/producer>;
+  void:classPartition <http://example.org/voidMUSIC!cf2def2e!-Album-producer-Band>,
+    <http://example.org/voidMUSIC!6d899f1b!-Album-producer-Producer>, <http://example.org/voidMUSIC!4b45653d!-Album-producer-SoloArtist>,
+    <http://example.org/voidMUSIC!7986368a!-Album-producer-Songwriter>;
+  void:triples "2777"^^xsd:long .
+
+<http://example.org/voidMUSIC!cf2def2e!-Album-producer-Band> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Band>;
+  void:triples "120"^^xsd:long .
+
+<http://example.org/voidMUSIC!6d899f1b!-Album-producer-Producer> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Producer>;
+  void:triples "2767"^^xsd:long .
+
+<http://example.org/voidMUSIC!4b45653d!-Album-producer-SoloArtist> a void:Dataset;
+  void:class <http://stardog.com/tutorial/SoloArtist>;
+  void:triples "476"^^xsd:long .
+
+<http://example.org/voidMUSIC!7986368a!-Album-producer-Songwriter> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Songwriter>;
+  void:triples "1511"^^xsd:long .
+
+<http://example.org/void#linkset_295eedec> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/producer>;
+  void:subjectsTarget <http://example.org/void#MUSIC!386e9010!Album>;
+  void:objectsTarget <http://example.org/void#MUSIC!b9bb0a71!Band> .
+
+<http://example.org/void#linkset_3485b5b6> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/producer>;
+  void:subjectsTarget <http://example.org/void#MUSIC!386e9010!Album>;
+  void:objectsTarget <http://example.org/void#MUSIC!56bd5c67!Producer> .
+
+<http://example.org/void#linkset_5dd3bd18> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/producer>;
+  void:subjectsTarget <http://example.org/void#MUSIC!386e9010!Album>;
+  void:objectsTarget <http://example.org/void#MUSIC!ed91ca2a!SoloArtist> .
+
+<http://example.org/void#linkset_2a0ed76a> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/producer>;
+  void:subjectsTarget <http://example.org/void#MUSIC!386e9010!Album>;
+  void:objectsTarget <http://example.org/void#MUSIC!62242dd9!Songwriter> .
+
+<http://example.org/voidMUSIC!9d8e0c19!-Album-track> a void:Dataset;
+  void:property <http://stardog.com/tutorial/track>;
+  void:classPartition <http://example.org/voidMUSIC!073e4df3!-Album-track-Song>;
+  void:triples "3810"^^xsd:long .
+
+<http://example.org/voidMUSIC!073e4df3!-Album-track-Song> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Song>;
+  void:triples "3810"^^xsd:long .
+
+<http://example.org/void#linkset_cbd83cf5> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/track>;
+  void:subjectsTarget <http://example.org/void#MUSIC!386e9010!Album>;
+  void:objectsTarget <http://example.org/void#MUSIC!85693790!Song> .
+
+<http://example.org/void#MUSIC!b9bb0a71!Band> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Band>;
+  void:entities "32"^^xsd:long;
+  void:propertyPartition <http://example.org/voidMUSIC!8b018188!-Band-description>,
+    <http://example.org/voidMUSIC!90598b5f!-Band-member>, <http://example.org/voidMUSIC!607bb8de!-Band-name> .
+
+<http://example.org/voidMUSIC!8b018188!-Band-description> a void:Dataset;
+  void:property <http://stardog.com/tutorial/description>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!a58f203d!-description-string>;
+  void:triples "32"^^xsd:long .
+
+<http://example.org/voidMUSIC!90598b5f!-Band-member> a void:Dataset;
+  void:property <http://stardog.com/tutorial/member>;
+  void:classPartition <http://example.org/voidMUSIC!c03ea721!-Band-member-Producer>,
+    <http://example.org/voidMUSIC!d316598f!-Band-member-SoloArtist>, <http://example.org/voidMUSIC!3da7e02a!-Band-member-Songwriter>;
+  void:triples "208"^^xsd:long .
+
+<http://example.org/voidMUSIC!c03ea721!-Band-member-Producer> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Producer>;
+  void:triples "41"^^xsd:long .
+
+<http://example.org/voidMUSIC!d316598f!-Band-member-SoloArtist> a void:Dataset;
+  void:class <http://stardog.com/tutorial/SoloArtist>;
+  void:triples "200"^^xsd:long .
+
+<http://example.org/voidMUSIC!3da7e02a!-Band-member-Songwriter> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Songwriter>;
+  void:triples "129"^^xsd:long .
+
+<http://example.org/void#linkset_6da769c0> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/member>;
+  void:subjectsTarget <http://example.org/void#MUSIC!b9bb0a71!Band>;
+  void:objectsTarget <http://example.org/void#MUSIC!56bd5c67!Producer> .
+
+<http://example.org/void#linkset_004f6a59> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/member>;
+  void:subjectsTarget <http://example.org/void#MUSIC!b9bb0a71!Band>;
+  void:objectsTarget <http://example.org/void#MUSIC!ed91ca2a!SoloArtist> .
+
+<http://example.org/void#linkset_71b18133> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/member>;
+  void:subjectsTarget <http://example.org/void#MUSIC!b9bb0a71!Band>;
+  void:objectsTarget <http://example.org/void#MUSIC!62242dd9!Songwriter> .
+
+<http://example.org/voidMUSIC!607bb8de!-Band-name> a void:Dataset;
+  void:property <http://stardog.com/tutorial/name>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!75c4ea3f!-name-string>;
+  void:triples "32"^^xsd:long .
+
+<http://example.org/void#MUSIC!56bd5c67!Producer> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Producer>;
+  void:entities "989"^^xsd:long;
+  void:propertyPartition <http://example.org/voidMUSIC!37095dd5!-Producer-description>,
+    <http://example.org/voidMUSIC!4c5241b3!-Producer-member>, <http://example.org/voidMUSIC!c6328e76!-Producer-name> .
+
+<http://example.org/voidMUSIC!37095dd5!-Producer-description> a void:Dataset;
+  void:property <http://stardog.com/tutorial/description>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!a58f203d!-description-string>;
+  void:triples "870"^^xsd:long .
+
+<http://example.org/voidMUSIC!4c5241b3!-Producer-member> a void:Dataset;
+  void:property <http://stardog.com/tutorial/member>;
+  void:classPartition <http://example.org/voidMUSIC!e934926c!-Producer-member-Producer>,
+    <http://example.org/voidMUSIC!a9342baf!-Producer-member-SoloArtist>, <http://example.org/voidMUSIC!bc8ce7ed!-Producer-member-Songwriter>;
+  void:triples "162"^^xsd:long .
+
+<http://example.org/voidMUSIC!e934926c!-Producer-member-Producer> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Producer>;
+  void:triples "28"^^xsd:long .
+
+<http://example.org/voidMUSIC!a9342baf!-Producer-member-SoloArtist> a void:Dataset;
+  void:class <http://stardog.com/tutorial/SoloArtist>;
+  void:triples "156"^^xsd:long .
+
+<http://example.org/voidMUSIC!bc8ce7ed!-Producer-member-Songwriter> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Songwriter>;
+  void:triples "104"^^xsd:long .
+
+<http://example.org/void#linkset_0c1faa97> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/member>;
+  void:subjectsTarget <http://example.org/void#MUSIC!56bd5c67!Producer>;
+  void:objectsTarget <http://example.org/void#MUSIC!56bd5c67!Producer> .
+
+<http://example.org/void#linkset_022671ab> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/member>;
+  void:subjectsTarget <http://example.org/void#MUSIC!56bd5c67!Producer>;
+  void:objectsTarget <http://example.org/void#MUSIC!ed91ca2a!SoloArtist> .
+
+<http://example.org/void#linkset_905420e5> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/member>;
+  void:subjectsTarget <http://example.org/void#MUSIC!56bd5c67!Producer>;
+  void:objectsTarget <http://example.org/void#MUSIC!62242dd9!Songwriter> .
+
+<http://example.org/voidMUSIC!c6328e76!-Producer-name> a void:Dataset;
+  void:property <http://stardog.com/tutorial/name>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!75c4ea3f!-name-string>;
+  void:triples "985"^^xsd:long .
+
+<http://example.org/void#MUSIC!ed91ca2a!SoloArtist> a void:Dataset;
+  void:class <http://stardog.com/tutorial/SoloArtist>;
+  void:entities "276"^^xsd:long;
+  void:propertyPartition <http://example.org/voidMUSIC!31b70eec!-SoloArtist-description>,
+    <http://example.org/voidMUSIC!d2584977!-SoloArtist-name> .
+
+<http://example.org/voidMUSIC!31b70eec!-SoloArtist-description> a void:Dataset;
+  void:property <http://stardog.com/tutorial/description>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!a58f203d!-description-string>;
+  void:triples "272"^^xsd:long .
+
+<http://example.org/voidMUSIC!d2584977!-SoloArtist-name> a void:Dataset;
+  void:property <http://stardog.com/tutorial/name>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!75c4ea3f!-name-string>;
+  void:triples "276"^^xsd:long .
+
+<http://example.org/void#MUSIC!85693790!Song> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Song>;
+  void:entities "3749"^^xsd:long;
+  void:propertyPartition <http://example.org/voidMUSIC!4df12268!-Song-description>,
+    <http://example.org/voidMUSIC!c586b15f!-Song-length>, <http://example.org/voidMUSIC!eaa2605a!-Song-name>,
+    <http://example.org/voidMUSIC!3cc2f293!-Song-writer> .
+
+<http://example.org/voidMUSIC!4df12268!-Song-description> a void:Dataset;
+  void:property <http://stardog.com/tutorial/description>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!a58f203d!-description-string>;
+  void:triples "3635"^^xsd:long .
+
+<http://example.org/voidMUSIC!c586b15f!-Song-length> a void:Dataset;
+  void:property <http://stardog.com/tutorial/length>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!415baec5!-length-integer>;
+  void:triples "3640"^^xsd:long .
+
+<http://example.org/voidMUSIC!415baec5!-length-integer> a void:Dataset;
+  void_ext:datatype xsd:integer .
+
+<http://example.org/voidMUSIC!eaa2605a!-Song-name> a void:Dataset;
+  void:property <http://stardog.com/tutorial/name>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!75c4ea3f!-name-string>;
+  void:triples "3634"^^xsd:long .
+
+<http://example.org/voidMUSIC!3cc2f293!-Song-writer> a void:Dataset;
+  void:property <http://stardog.com/tutorial/writer>;
+  void:classPartition <http://example.org/voidMUSIC!7da3060c!-Song-writer-Band>, <http://example.org/voidMUSIC!e312f74d!-Song-writer-Producer>,
+    <http://example.org/voidMUSIC!b40594d1!-Song-writer-SoloArtist>, <http://example.org/voidMUSIC!8bf6f561!-Song-writer-Songwriter>;
+  void:triples "7296"^^xsd:long .
+
+<http://example.org/voidMUSIC!7da3060c!-Song-writer-Band> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Band>;
+  void:triples "89"^^xsd:long .
+
+<http://example.org/voidMUSIC!e312f74d!-Song-writer-Producer> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Producer>;
+  void:triples "3924"^^xsd:long .
+
+<http://example.org/voidMUSIC!b40594d1!-Song-writer-SoloArtist> a void:Dataset;
+  void:class <http://stardog.com/tutorial/SoloArtist>;
+  void:triples "3952"^^xsd:long .
+
+<http://example.org/voidMUSIC!8bf6f561!-Song-writer-Songwriter> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Songwriter>;
+  void:triples "7014"^^xsd:long .
+
+<http://example.org/void#linkset_b77cbe18> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/writer>;
+  void:subjectsTarget <http://example.org/void#MUSIC!85693790!Song>;
+  void:objectsTarget <http://example.org/void#MUSIC!b9bb0a71!Band> .
+
+<http://example.org/void#linkset_2e9cc91d> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/writer>;
+  void:subjectsTarget <http://example.org/void#MUSIC!85693790!Song>;
+  void:objectsTarget <http://example.org/void#MUSIC!56bd5c67!Producer> .
+
+<http://example.org/void#linkset_5c49e304> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/writer>;
+  void:subjectsTarget <http://example.org/void#MUSIC!85693790!Song>;
+  void:objectsTarget <http://example.org/void#MUSIC!ed91ca2a!SoloArtist> .
+
+<http://example.org/void#linkset_36731363> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/writer>;
+  void:subjectsTarget <http://example.org/void#MUSIC!85693790!Song>;
+  void:objectsTarget <http://example.org/void#MUSIC!62242dd9!Songwriter> .
+
+<http://example.org/void#MUSIC!62242dd9!Songwriter> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Songwriter>;
+  void:entities "1591"^^xsd:long;
+  void:propertyPartition <http://example.org/voidMUSIC!fca30ba0!-Songwriter-description>,
+    <http://example.org/voidMUSIC!267b4254!-Songwriter-member>, <http://example.org/voidMUSIC!5cf9c48c!-Songwriter-name> .
+
+<http://example.org/voidMUSIC!fca30ba0!-Songwriter-description> a void:Dataset;
+  void:property <http://stardog.com/tutorial/description>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!a58f203d!-description-string>;
+  void:triples "1402"^^xsd:long .
+
+<http://example.org/voidMUSIC!267b4254!-Songwriter-member> a void:Dataset;
+  void:property <http://stardog.com/tutorial/member>;
+  void:classPartition <http://example.org/voidMUSIC!afb3af69!-Songwriter-member-Producer>,
+    <http://example.org/voidMUSIC!5486ee92!-Songwriter-member-SoloArtist>, <http://example.org/voidMUSIC!c018d2fa!-Songwriter-member-Songwriter>;
+  void:triples "63"^^xsd:long .
+
+<http://example.org/voidMUSIC!afb3af69!-Songwriter-member-Producer> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Producer>;
+  void:triples "18"^^xsd:long .
+
+<http://example.org/voidMUSIC!5486ee92!-Songwriter-member-SoloArtist> a void:Dataset;
+  void:class <http://stardog.com/tutorial/SoloArtist>;
+  void:triples "57"^^xsd:long .
+
+<http://example.org/voidMUSIC!c018d2fa!-Songwriter-member-Songwriter> a void:Dataset;
+  void:class <http://stardog.com/tutorial/Songwriter>;
+  void:triples "40"^^xsd:long .
+
+<http://example.org/void#linkset_1cf83082> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/member>;
+  void:subjectsTarget <http://example.org/void#MUSIC!62242dd9!Songwriter>;
+  void:objectsTarget <http://example.org/void#MUSIC!56bd5c67!Producer> .
+
+<http://example.org/void#linkset_402dde63> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/member>;
+  void:subjectsTarget <http://example.org/void#MUSIC!62242dd9!Songwriter>;
+  void:objectsTarget <http://example.org/void#MUSIC!ed91ca2a!SoloArtist> .
+
+<http://example.org/void#linkset_04d79374> a void:Linkset;
+  void:linkPredicate <http://stardog.com/tutorial/member>;
+  void:subjectsTarget <http://example.org/void#MUSIC!62242dd9!Songwriter>;
+  void:objectsTarget <http://example.org/void#MUSIC!62242dd9!Songwriter> .
+
+<http://example.org/voidMUSIC!5cf9c48c!-Songwriter-name> a void:Dataset;
+  void:property <http://stardog.com/tutorial/name>;
+  void_ext:datatypePartition <http://example.org/voidMUSIC!75c4ea3f!-name-string>;
+  void:triples "1569"^^xsd:long .
+
+<http://example.org/void#MUSIC!5fc0311a!has_sha256> void:property <http://example.org/has_sha256>;
+  void:triples "1"^^xsd:long;
+  void:distinctSubjects "1"^^xsd:long;
+  void:distinctObjects "1"^^xsd:long .
+
+<http://example.org/void#MUSIC!3e2f60da!modified> void:property dcterms:modified;
+  void:triples "1"^^xsd:long;
+  void:distinctSubjects "1"^^xsd:long;
+  void:distinctObjects "1"^^xsd:long .
+
+<http://example.org/void#MUSIC!4c6fe9ae!dataDump> void:property void:dataDump;
+  void:triples "1"^^xsd:long;
+  void:distinctSubjects "1"^^xsd:long;
+  void:distinctObjects "1"^^xsd:long .
+
+<http://example.org/void#MUSIC!3a190925!distinctObjects> void:property void:distinctObjects;
+  void:triples "1"^^xsd:long;
+  void:distinctSubjects "1"^^xsd:long;
+  void:distinctObjects "1"^^xsd:long .
+
+<http://example.org/void#MUSIC!a7c4971a!distinctSubjects> void:property void:distinctSubjects;
+  void:triples "1"^^xsd:long;
+  void:distinctSubjects "1"^^xsd:long;
+  void:distinctObjects "1"^^xsd:long .
+
+<http://example.org/void#MUSIC!35ff777c!properties> void:property void:properties;
+  void:triples "1"^^xsd:long;
+  void:distinctSubjects "1"^^xsd:long;
+  void:distinctObjects "1"^^xsd:long .
+
+<http://example.org/void#MUSIC!b5b09137!triples> void:property void:triples;
+  void:triples "1"^^xsd:long;
+  void:distinctSubjects "1"^^xsd:long;
+  void:distinctObjects "1"^^xsd:long .
+
+<http://example.org/void#MUSIC!43a9f9e9!artist> void:property <http://stardog.com/tutorial/artist>;
+  void:triples "1039"^^xsd:long;
+  void:distinctSubjects "1037"^^xsd:long;
+  void:distinctObjects "103"^^xsd:long .
+
+<http://example.org/void#MUSIC!ee1dab16!date> void:property <http://stardog.com/tutorial/date>;
+  void:triples "1113"^^xsd:long;
+  void:distinctSubjects "1037"^^xsd:long;
+  void:distinctObjects "993"^^xsd:long .
+
+<http://example.org/void#MUSIC!c319beef!description> void:property <http://stardog.com/tutorial/description>;
+  void:triples "6645"^^xsd:long;
+  void:distinctSubjects "6645"^^xsd:long;
+  void:distinctObjects "6645"^^xsd:long .
+
+<http://example.org/void#MUSIC!11a39c66!length> void:property <http://stardog.com/tutorial/length>;
+  void:triples "3640"^^xsd:long;
+  void:distinctSubjects "3640"^^xsd:long;
+  void:distinctObjects "498"^^xsd:long .
+
+<http://example.org/void#MUSIC!b988c8c9!member> void:property <http://stardog.com/tutorial/member>;
+  void:triples "208"^^xsd:long;
+  void:distinctSubjects "32"^^xsd:long;
+  void:distinctObjects "208"^^xsd:long .
+
+<http://example.org/void#MUSIC!1c11f371!name> void:property <http://stardog.com/tutorial/name>;
+  void:triples "6897"^^xsd:long;
+  void:distinctSubjects "6897"^^xsd:long;
+  void:distinctObjects "6897"^^xsd:long .
+
+<http://example.org/void#MUSIC!21ebb620!producer> void:property <http://stardog.com/tutorial/producer>;
+  void:triples "2777"^^xsd:long;
+  void:distinctSubjects "1037"^^xsd:long;
+  void:distinctObjects "995"^^xsd:long .
+
+<http://example.org/void#MUSIC!777aa530!track> void:property <http://stardog.com/tutorial/track>;
+  void:triples "3810"^^xsd:long;
+  void:distinctSubjects "1037"^^xsd:long;
+  void:distinctObjects "3749"^^xsd:long .
+
+<http://example.org/void#MUSIC!e4cae33b!writer> void:property <http://stardog.com/tutorial/writer>;
+  void:triples "7296"^^xsd:long;
+  void:distinctSubjects "3749"^^xsd:long;
+  void:distinctObjects "1612"^^xsd:long .
+
+<http://example.org/void#MUSIC!c74e2b73!type> void:property rdf:type;
+  void:triples "7675"^^xsd:long;
+  void:distinctSubjects "7039"^^xsd:long;
+  void:distinctObjects "7"^^xsd:long .
