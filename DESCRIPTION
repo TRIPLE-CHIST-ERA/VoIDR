@@ -7,7 +7,7 @@ Description: Create specific packages for SPARQL endpoints.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Depends: dplyr, purrr, jsonlite, httr, stringi
+Depends: dplyr, purrr, jsonlite, httr, stringi, R6
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
