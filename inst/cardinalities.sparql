@@ -91,3 +91,19 @@ GROUP BY ?property
 ###
 }
 } ORDER BY ?classFrom ?cardinalities
+
+
+
+### new load unique data:
+SELECT *
+# ...
+       WHERE {
+  # first a subquery to set the limit. Add also the first column here? That would ensure that at least that column will be populated.
+                 {SELECT ?Taxon ?commonName
+    WHERE {
+                     ?Taxon a <http://purl.uniprot.org/core/Taxon> .
+                     ?Taxon <http://purl.uniprot.org/core/commonName> ?commonName
+                   } LIMIT 1000
+                 }
+  # Following columns. OPTIONAL? If yes I'll always get my 1000 rows but might be mostly empty. If no I risk getting fewer rows but guaranteed full. Often fewer = 0 (the more columns I add the more I risk this)
+ OPTIONAL {?Taxon <http://purl.uniprot.org/core/otherName>  ?otherName }
