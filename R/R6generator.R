@@ -44,6 +44,7 @@ where {
   }
 } ORDER BY ?classFrom  ?property ?cardinalities'
   #endpoint <- 'http://localhost:7200/repositories/beatles'
+  #endpoint <- 'http://localhost:7200/repositories/uniprotvoid'
   classDF <- SPARQL_query(endpoint, dataSparql)
 
 }
