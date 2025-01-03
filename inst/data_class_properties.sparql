@@ -16,7 +16,6 @@ where {
   }
 
   {
-    ###
     SELECT
     ?property
     ( CONCAT( MAX( ?subject_cardinality ), '..', MAX( ?object_cardinality )) AS ?cardinalities ) # NB: "1" is smaller than "n"
@@ -42,7 +41,7 @@ where {
       }
     }
     GROUP BY ?property
-    ###
+
   }
 } ORDER BY ?classFrom ?cardinalities
 
@@ -65,7 +64,6 @@ where {
     ?cp3 void:class ?classTo .
   }
   {
-    ###
     SELECT
     ?property
     ( CONCAT( MAX( ?subject_cardinality ), '..', MAX( ?object_cardinality )) AS ?cardinalities ) # NB: "1" is smaller than "n"
@@ -91,7 +89,6 @@ where {
       }
     }
     GROUP BY ?property
-    ###
   }
 } ORDER BY ?classFrom ?cardinalities
 

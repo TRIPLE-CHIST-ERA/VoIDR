@@ -99,3 +99,7 @@ y <- tidyr::pivot_wider(x, id_cols= 1, names_from = 'p', values_from= 'value', v
 
 g <- makeOneFunction(cls[1,1], cls[1,2], rdfObj, 'http://localhost:7200/repositories/beatles')
 package.skeleton(name='testBeatles', list = c("getSong"))
+
+cls <- getClasses2(voidEndpoint = 'https://localhost:7200/uniprotvoid')
+x <- getMethods2('http://purl.uniprot.org/core/Book_Citation', cls)
+y <- getMethods2('http://biohackathon.org/resource/faldo#Position', cls)
