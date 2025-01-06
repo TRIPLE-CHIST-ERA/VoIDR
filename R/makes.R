@@ -104,3 +104,53 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
 
 ##TODO DESCRIPTION AND NAMESPACE
 
+makeOneFunction2 <- function(className, endpoint, classList){
+  props <- getMethods2(unclass(className), classList )
+  # propFilter <- paste(unique(props$propIri), collapse='> <')
+  shortName <- sub('(.*)[/|#]','',className) %>% make.names %>% sub('\\.+', '_',.)
+
+  #TODO: keep prefixes
+
+  #root <- sub('(.*)[/|#].*','\\1',clasIri)
+  shortProps <-sapply(props, function(x) sapply(x, function(y)unique(sub('(.*)[/|#]','', y$property)), simplify = FALSE), simplify = FALSE)
+return(shortProps)
+ new_l <-  sapply(sp, function(l) l[!sapply(l, function(x) length(x) ==0)])
+ sp %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty))
+ isEmpty <- function(x) length(x) ==0
+ sp %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty)) %>% list %>% paste(collapse = ", ")
+  #  propDict <- list()
+  #  propDict[unique(shortProps)] <- unique(props$propIri)
+
+  func <- paste0("function(properties = c(\"", paste(shortProps,collapse='", "'),"\"), limit = 1000){
+    propDict <- list()
+    propDict[c(\"",paste(shortProps,collapse='", "'),"\")] <- c(\"", paste(unique(props$propIri),collapse='", "'),"\")
+    propFilter <- paste(propDict[properties], collapse='> <')
+    sparql <-  paste0('SELECT *
+                  WHERE {
+                    ?",shortName, " a <',\"", classIri, "\",'> .
+                     VALUES ?p { <', propFilter, '> }
+                    ?",shortName, " ?p ?value
+                  }')
+    if(!is.null(limit)){
+      sparql <- paste0(sparql, ' LIMIT ', as.integer(limit))
+    }
+    long_df <- SPARQL_query('",endpoint,"', sparql)
+    if(is.null(long_df)){
+      return(NULL)
+    }
+    wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= '~~'))
+    colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*[/|#]','',x))
+    return(wide_df)
+
+  }")
+  return(func)
+  doc <- getDescriptions(filter = list(class = classIri, property = paste(unique(props$propIri), collapse='> <')), endpoint)
+  funcDoc <- doc$class$description
+  propDoc <- doc$property
+  doc$property$entity <- sub('(.*)[/|#]','',doc$property$entity)
+  ret <- list()
+  ret[[shortName]] <- list(func = func, funcDoc = funcDoc, propDoc = propDoc)
+  return(ret)
+}
+
+
