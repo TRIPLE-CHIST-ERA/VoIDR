@@ -158,7 +158,7 @@ SELECT DISTINCT ?classFrom  ?property ?datatypeTo ?cardinalities '
   if(!is.null(voidGraph)){
     tempSparql <- paste0(tempSparql, 'FROM <', voidGraph, '> ')
   }
-  statements$dataPropSparql <- paste0(tempSparql, "
+  statements$literalSparql <- paste0(tempSparql, "
 where {
   ?cp1 void:class ?classFrom .
   ?cp1 void:propertyPartition ?pp1 .
@@ -170,7 +170,7 @@ where {
   }", sparqlSuffix)
 
 
- statements$classPropSparql <- paste0(tempSparql,  "
+ statements$iriSparql <- paste0(tempSparql,  "
 where {
   ?cp1 void:class ?classFrom .
   ?cp1 void:propertyPartition ?pp1 .
@@ -196,12 +196,12 @@ where {
 
 
 getMethods2 <- function(cls, propList){
-  dt <- propList$dataPropSparql
+  dt <- propList$literalSparql
   dt <- dt[dt$classFrom == cls,]
-  cl <- propList$classPropSparql
+  cl <- propList$iriSparql
   cl <- cl[cl$classFrom == cls,]
-  list(data = list(unique = dt[dt$cardinalities %in% c('1..1', 'n..1'), c('property', 'datatypeTo')], nonunique = dt[dt$cardinalities %in% c('1..n', 'n..n'), c('property', 'datatypeTo')] ),
-       classes = list(unique = cl[cl$cardinalities %in% c('1..1', 'n..1'), 'property'], nonunique = cl[cl$cardinalities %in% c('1..n', 'n..n'), 'property'] )
+  list(literalProperties = list(unique = dt[dt$cardinalities %in% c('1..1', 'n..1'), c('property', 'datatypeTo')], nonunique = dt[dt$cardinalities %in% c('1..n', 'n..n'), c('property', 'datatypeTo')] ),
+       iriProperties = list(unique = cl[cl$cardinalities %in% c('1..1', 'n..1'), 'property'], nonunique = cl[cl$cardinalities %in% c('1..n', 'n..n'), 'property'] )
   )
 
 }

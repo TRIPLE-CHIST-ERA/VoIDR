@@ -113,15 +113,18 @@ makeOneFunction2 <- function(className, endpoint, classList){
 
   #root <- sub('(.*)[/|#].*','\\1',clasIri)
   shortProps <-sapply(props, function(x) sapply(x, function(y)unique(sub('(.*)[/|#]','', y$property)), simplify = FALSE), simplify = FALSE)
-return(shortProps)
- new_l <-  sapply(sp, function(l) l[!sapply(l, function(x) length(x) ==0)])
- sp %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty))
- isEmpty <- function(x) length(x) ==0
- sp %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty)) %>% list %>% paste(collapse = ", ")
+ #return(shortProps)
+ #new_l <-  sapply(sp, function(l) l[!sapply(l, function(x) length(x) ==0)])
+ #sp %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty))
+ isEmpty <- function(x) length(x) == 0
+ shortProps <- shortProps %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty)) %>% list
+ argProps <- paste(shortProps, collapse = ", ")
+ return(argProps)
   #  propDict <- list()
   #  propDict[unique(shortProps)] <- unique(props$propIri)
 
-  func <- paste0("function(properties = c(\"", paste(shortProps,collapse='", "'),"\"), limit = 1000){
+  #func <- paste0("function(properties = c(\"", paste(shortProps,collapse='", "'),"\"), limit = 1000){
+  func <- paste0("function(properties = ", argProps,  "limit = 1000){
     propDict <- list()
     propDict[c(\"",paste(shortProps,collapse='", "'),"\")] <- c(\"", paste(unique(props$propIri),collapse='", "'),"\")
     propFilter <- paste(propDict[properties], collapse='> <')
@@ -152,5 +155,8 @@ return(shortProps)
   ret[[shortName]] <- list(func = func, funcDoc = funcDoc, propDoc = propDoc)
   return(ret)
 }
+
+
+sparqlGen <- function
 
 
