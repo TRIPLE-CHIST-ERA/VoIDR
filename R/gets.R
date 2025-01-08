@@ -111,7 +111,18 @@ expandDF <- function(df, sep='~~'){
   apply(df, 1, strsplit, sep) %>% lapply(expand.grid) %>% Reduce(rbind,.) %>% tibble()
 }
 
-
+makeSparql <- function( propFilter, shortName, longName, limit = NULL){
+  sparql <- paste0('SELECT *
+                  WHERE {
+                    ?',shortName, ' a <', longName, '> .
+                     VALUES ?p { <', propFilter, '> }
+                    ?',shortName, ' ?p ?value
+                  }')
+  if(!is.null(limit)){
+    sparql <- paste0(sparql, ' LIMIT ', as.integer(limit))
+  }
+  return(sparql)
+}
 
 getClasses2 <- function(voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL){
   # only one of voidFile and voidEndpoint; favour voidEndpoint
