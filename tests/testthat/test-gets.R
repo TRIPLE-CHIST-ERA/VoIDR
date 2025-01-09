@@ -103,7 +103,8 @@ package.skeleton(name='testBeatles', list = c("getSong"))
 cls <- getClasses2(voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid')
 x <- getMethods2('http://purl.uniprot.org/core/Book_Citation', cls)
 y <- getMethods2('http://biohackathon.org/resource/faldo#Position', cls)
-sp <- makeOneFunction2('http://purl.uniprot.org/core/Book_Citation',  'https://sparql.uniprot.org', cls)
-isEmpty <- function(x) length(x) ==0
-sp %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty)) %>% list %>% paste(collapse = ", ") %>% cat
+sp1 <- makeOneFunction2("http://biohackathon.org/resource/faldo#ExactPosition",  'https://sparql.uniprot.org', cls)
+sp2 <- makeOneFunction2("http://purl.uniprot.org/core/Book_Citation",  'https://sparql.uniprot.org', cls)
 
+
+a <- sapply(cls$iriSparql$classFrom, function(x) makeOneFunction2(x, 'https://sparql.uniprot.org', cls) )

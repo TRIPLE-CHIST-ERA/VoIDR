@@ -114,15 +114,17 @@ makeOneFunction2 <- function(className, endpoint, classList){
   #root <- sub('(.*)[/|#].*','\\1',clasIri)
   isEmpty <- function(x) length(x) == 0
   longProps <- sapply(props, function(x) sapply(x, function(y)unique(y$property), simplify = FALSE), simplify = FALSE) %>%
-                sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty))
+                sapply(function(l) l[!sapply(l, isEmpty)], simplify = FALSE)  %>% `[`(!sapply(., isEmpty))
   # shortProps <-sapply(props, function(x) sapply(x, function(y)unique(sub('(.*)[/|#]','', y$property)), simplify = FALSE), simplify = FALSE)
   shortProps <-sapply(longProps, function(x) sapply(x, function(y)sub('(.*)[/|#]','', y), simplify = FALSE), simplify = FALSE)
+
  #return(c(shortProps, longProps))
  #new_l <-  sapply(sp, function(l) l[!sapply(l, function(x) length(x) ==0)])
  #sp %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty))
  #isEmpty <- function(x) length(x) == 0
  #shortProps <- shortProps %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty)) %>% list
  argProps <- paste(list(shortProps), collapse = ", ")
+
  #return(argProps)
   #  propDict <- list()
   #  propDict[unique(shortProps)] <- unique(props$propIri)
@@ -149,7 +151,15 @@ makeOneFunction2 <- function(className, endpoint, classList){
    }, simplify = FALSE)
 
   }")
-  return(func)
+
+ funcdoc <-  sapply(names(shortProps), function(t){
+    propType = shortProps[[t]]
+    sapply(names(propType), function(card){
+      propCard <- longProps[[t]][[card]]
+      getDescriptions(filter = list(class = className, property = paste(propCard, collapse='> <')), endpoint)
+    }, simplify = FALSE)}, simplify = FALSE)
+
+  return(funcdoc)
   filter <- list(class = className, property = paste(longProps, collapse='> <'))
   return(filter)
   doc <- getDescriptions(filter = list(class = className, property = paste(longProps, collapse='> <')), endpoint)

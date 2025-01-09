@@ -96,6 +96,7 @@ getDescriptions <- function(filters = list('class' = NULL, 'property' = NULL), e
     OPTIONAL{ ?entity rdfs:label ?desc_2 }
     OPTIONAL{ ?entity skos:prefLabel ?desc_3 }
     }')
+
     SPARQL_query(endpoint, sparql, use.POST = TRUE)
   }, simplify = FALSE)
 
@@ -165,12 +166,13 @@ statements <- list()
 PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
 PREFIX void:<http://rdfs.org/ns/void#>
 PREFIX void_ext:<http://ldf.fi/void-ext#>
-SELECT DISTINCT ?classFrom  ?property ?datatypeTo ?cardinalities '
+SELECT DISTINCT ?cp1 ?classFrom  ?property ?datatypeTo ?cardinalities '
   if(!is.null(voidGraph)){
     tempSparql <- paste0(tempSparql, 'FROM <', voidGraph, '> ')
   }
   statements$literalSparql <- paste0(tempSparql, "
 where {
+
   ?cp1 void:class ?classFrom .
   ?cp1 void:propertyPartition ?pp1 .
   ?pp1 void:property ?property .
