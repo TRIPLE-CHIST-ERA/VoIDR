@@ -104,7 +104,7 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
 
 ##TODO DESCRIPTION AND NAMESPACE
 
-makeOneFunction2 <- function(className, endpoint, classList){
+makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
   props <- getMethods2(unclass(className), classList )
   # propFilter <- paste(unique(props$propIri), collapse='> <')
   shortName <- sub('(.*)[/|#]','',className) %>% make.names %>% sub('\\.+', '_',.)
@@ -156,12 +156,15 @@ makeOneFunction2 <- function(className, endpoint, classList){
     propType = shortProps[[t]]
     sapply(names(propType), function(card){
       propCard <- longProps[[t]][[card]]
-      getDescriptions(filter = list(class = className, property = paste(propCard, collapse='> <')), endpoint)
+      getDescriptions(filter = list(class = className, property = paste(propCard, collapse='> <')), voidEndpoint)
     }, simplify = FALSE)}, simplify = FALSE)
 
+  flatProps <- sapply(longProps, function(x) unname(sapply(x, unname))) %>% unname %>% unlist
+  funcdoc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
+
   return(funcdoc)
-  filter <- list(class = className, property = paste(longProps, collapse='> <'))
-  return(filter)
+
+
   doc <- getDescriptions(filter = list(class = className, property = paste(longProps, collapse='> <')), endpoint)
   funcDoc <- doc$class$description
   propDoc <- doc$property
