@@ -43,9 +43,11 @@ makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidE
 }
 
 makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL, authors = 'person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))', license = NULL, dest_path = '.'){
-  cls <- getClasses(voidFile,voidEndpoint, voidGraph)
-  funcs <- apply(cls,1, function(x){
-    makeOneFunction(x[1], x[2], endpoint, voidFile, voidEndpoint, voidGraph)
+  cls <- getClasses2(voidFile,voidEndpoint, voidGraph)
+  clsNames <- unique(c(cls$literalSparql$classFrom, cls$iriSparql$classFrom))
+  funcs <- lapply(clsNames, function(x){
+ #   makeOneFunction(x[1], x[2], endpoint, voidFile, voidEndpoint, voidGraph)
+    makeOneFunction2(x, endpoint, voidEndpoint, cls)
   }) %>% unlist(recursive = FALSE)
   assign('funcs', funcs, envir = .GlobalEnv)
   # restart every time:
@@ -115,6 +117,7 @@ makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
   isEmpty <- function(x) length(x) == 0
   longProps <- sapply(props, function(x) sapply(x, function(y)unique(y$property), simplify = FALSE), simplify = FALSE) %>%
                 sapply(function(l) l[!sapply(l, isEmpty)], simplify = FALSE)  %>% `[`(!sapply(., isEmpty))
+
   # shortProps <-sapply(props, function(x) sapply(x, function(y)unique(sub('(.*)[/|#]','', y$property)), simplify = FALSE), simplify = FALSE)
   shortProps <-sapply(longProps, function(x) sapply(x, function(y)sub('(.*)[/|#]','', y), simplify = FALSE), simplify = FALSE)
 
@@ -152,20 +155,21 @@ makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
 
   }")
 
- funcdoc <-  sapply(names(shortProps), function(t){
-    propType = shortProps[[t]]
-    sapply(names(propType), function(card){
-      propCard <- longProps[[t]][[card]]
-      getDescriptions(filter = list(class = className, property = paste(propCard, collapse='> <')), voidEndpoint)
-    }, simplify = FALSE)}, simplify = FALSE)
-
-  flatProps <- sapply(longProps, function(x) unname(sapply(x, unname))) %>% unname %>% unlist
-  funcdoc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
-
-  return(funcdoc)
+ #funcdoc <-  sapply(names(shortProps), function(t){
+#    propType = shortProps[[t]]
+#    sapply(names(propType), function(card){
+#      propCard <- longProps[[t]][[card]]
+#      getDescriptions(filter = list(class = className, property = paste(propCard, collapse='> <')), voidEndpoint)
+#    }, simplify = FALSE)}, simplify = FALSE)
 
 
-  doc <- getDescriptions(filter = list(class = className, property = paste(longProps, collapse='> <')), endpoint)
+  flatProps <- sapply(longProps, function(x) unname(sapply(x, unname, simplify = FALSE)), simplify = FALSE) %>% unname %>% unlist
+
+  doc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
+
+
+
+ # doc <- getDescriptions(filter = list(class = className, property = paste(longProps, collapse='> <')), endpoint)
   funcDoc <- doc$class$description
   propDoc <- doc$property
   doc$property$entity <- sub('(.*)[/|#]','',doc$property$entity)

@@ -96,7 +96,7 @@ getDescriptions <- function(filters = list('class' = NULL, 'property' = NULL), e
     OPTIONAL{ ?entity rdfs:label ?desc_2 }
     OPTIONAL{ ?entity skos:prefLabel ?desc_3 }
     }')
-   cat(sparql)
+
     SPARQL_query(endpoint, sparql, use.POST = TRUE)
   }, simplify = FALSE)
 
@@ -166,7 +166,7 @@ statements <- list()
 PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
 PREFIX void:<http://rdfs.org/ns/void#>
 PREFIX void_ext:<http://ldf.fi/void-ext#>
-SELECT DISTINCT ?cp1 ?classFrom  ?property ?datatypeTo ?cardinalities '
+SELECT DISTINCT  ?classFrom  ?property ?datatypeTo ?cardinalities '
   if(!is.null(voidGraph)){
     tempSparql <- paste0(tempSparql, 'FROM <', voidGraph, '> ')
   }
@@ -198,7 +198,7 @@ where {
 
 
   sapply(names(statements), function(sparql){
-    cat(statements[[sparql]])
+    #cat(statements[[sparql]])
     if(!is.null(voidEndpoint)){
       voidEndpoint %>% SPARQL_query(statements[[sparql]])
     } else {
@@ -208,11 +208,11 @@ where {
 }
 
 
-getMethods2 <- function(cls, propList){
+getMethods2 <- function(clsName, propList){
   dt <- propList$literalSparql
-  dt <- dt[dt$classFrom == cls,]
+  dt <- dt[dt$classFrom == clsName,]
   cl <- propList$iriSparql
-  cl <- cl[cl$classFrom == cls,]
+  cl <- cl[cl$classFrom == clsName,]
   list(literalProperties = list(unique = dt[dt$cardinalities %in% c('1..1', 'n..1'), c('property', 'datatypeTo')], nonunique = dt[dt$cardinalities %in% c('1..n', 'n..n'), c('property', 'datatypeTo')] ),
        iriProperties = list(unique = cl[cl$cardinalities %in% c('1..1', 'n..1'), 'property'], nonunique = cl[cl$cardinalities %in% c('1..n', 'n..n'), 'property'] )
   )

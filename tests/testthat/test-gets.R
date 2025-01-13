@@ -111,3 +111,4 @@ getDescriptions(filters=list(class="http://purl.uniprot.org/core/Taxon"), 'http:
 
 
 a <- sapply(cls$iriSparql$classFrom, function(x) makeOneFunction2(x, 'https://sparql.uniprot.org', cls) )
+f <- makePackage('UniprotR','https://sparql.uniprot.org', voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid')
