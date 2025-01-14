@@ -118,8 +118,13 @@ makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
   longProps <- sapply(props, function(x) sapply(x, function(y)unique(y$property), simplify = FALSE), simplify = FALSE) %>%
                 sapply(function(l) l[!sapply(l, isEmpty)], simplify = FALSE)  %>% `[`(!sapply(., isEmpty))
 
+
+
   # shortProps <-sapply(props, function(x) sapply(x, function(y)unique(sub('(.*)[/|#]','', y$property)), simplify = FALSE), simplify = FALSE)
   shortProps <-sapply(longProps, function(x) sapply(x, function(y)sub('(.*)[/|#]','', y), simplify = FALSE), simplify = FALSE)
+  return(list(longProps = longProps, shortProps=shortProps))
+  propDict <- list()
+  propDict[unlist(shortProps, use.names = FALSE)] <- unlist(longProps, use.names = FALSE)
 
  #return(c(shortProps, longProps))
  #new_l <-  sapply(sp, function(l) l[!sapply(l, function(x) length(x) ==0)])
@@ -155,6 +160,22 @@ makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
 
   }")
 
+  func <- paste0("function(properties = ", argProps,  ", limit = 1000){
+   propDict <- ",  paste(list(propDict), collapse = ", "), "
+   sparql <- makeSparql(propDict[properties],'", shortName, "', '", className, "', limit, ", only.complete.cases, ")
+      long_df <- SPARQL_query('",endpoint,"', sparql)
+      if(is.null(long_df)){
+       return(NULL)
+     }
+    wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= '~~'))
+    colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*[/|#]','',x))
+    return(wide_df)
+    }, simplify = FALSE)
+   }, simplify = FALSE)
+
+  }")
+
+
  #funcdoc <-  sapply(names(shortProps), function(t){
 #    propType = shortProps[[t]]
 #    sapply(names(propType), function(card){
@@ -178,3 +199,37 @@ makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
   return(ret)
 }
 
+
+makeSparql_old <- function( propFilter, shortName, longName, limit = NULL){
+  sparql <- paste0('SELECT *
+                  WHERE {
+                    ?',shortName, ' a <', longName, '> .
+                     VALUES ?p { <', propFilter, '> }
+                    ?',shortName, ' ?p ?value
+                  }')
+  if(!is.null(limit)){
+    sparql <- paste0(sparql, ' LIMIT ', as.integer(limit))
+  }
+  return(sparql)
+}
+
+makeSparql <- function( propFilter, shortName, longName, limit = NULL, only.complete.cases = FALSE){
+  if(only.complete.cases){
+    linePrefix = ''
+  } else {
+    linePrefix = 'OPTIONAL'
+  }
+  selectLimitClause <- paste0("SELECT ?", shortName, "\n WHERE { ?", shortName, " a <", longName, "}\n")
+  if(!is.null(limit)){
+    selectLimitClause <- paste0(selectLimitClause, ' LIMIT ', format(limit, scientific = FALSE), "\n")
+  }
+
+  joinClause <- Reduce(function(x,y) {
+    paste0(x, linePrefix, '{ ?', shortName, ' <',  propFilter[[y]], '> ?', y , "}\n" )
+  }, names(propFilter), init = '')
+
+
+  sparql <- paste0("SELECT *\n WHERE {\n", selectLimitClause, joinClause, "\n}")
+
+  return(sparql)
+}
