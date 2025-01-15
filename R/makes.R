@@ -74,10 +74,9 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
     funcText <- paste0(n, ' <- ', funcs[[n]]$func)
     cat(funcText, file = fileName, append = TRUE)
   })
-
   package.skeleton(name = packageName, path = myDir, code_files = paste0(myDir, '/', names(funcs), '.R'))
   # get the sources for SPARQL_query and expandDF
-  lapply(c('expandDF', 'SPARQL_query'), function(fname){
+  lapply(c('makeSparql', 'SPARQL_query'), function(fname){
     fsource <- capture.output(print(get(fname, envir = as.environment('package:VoIDR'))))
     fsource[1] <- paste0(fname, ' <- ',fsource[1])
     # without the lines starting with "<" (meta package rubbish)
@@ -95,7 +94,7 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
   }
   cat(desc, file = paste0(myDir,'/', packageName,'/DESCRIPTION'), sep ="\n")
   # NAMESPACE
-  cat('export("expandDF")', file = paste0(myDir,'/', packageName,'/NAMESPACE'), append = TRUE)
+ # cat('export("expandDF")', file = paste0(myDir,'/', packageName,'/NAMESPACE'), append = TRUE)
   unlink(paste0(myDir,'/', packageName, '/Read-and-delete-me'))
   unlink(paste0(myDir,'/', packageName, '/man/*'))
   devtools::document(pkg = paste0(myDir,'/', packageName))
@@ -104,9 +103,10 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
 }
 
 
-##TODO DESCRIPTION AND NAMESPACE
+
 
 makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
+
   props <- getMethods2(unclass(className), classList )
   # propFilter <- paste(unique(props$propIri), collapse='> <')
   shortName <- sub('(.*)[/|#]','',className) %>% make.names %>% sub('\\.+', '_',.)
@@ -122,11 +122,11 @@ makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
 
   # shortProps <-sapply(props, function(x) sapply(x, function(y)unique(sub('(.*)[/|#]','', y$property)), simplify = FALSE), simplify = FALSE)
   shortProps <-sapply(longProps, function(x) sapply(x, function(y)sub('(.*)[/|#]','', y), simplify = FALSE), simplify = FALSE)
-  return(list(longProps = longProps, shortProps=shortProps))
+
   propDict <- list()
   propDict[unlist(shortProps, use.names = FALSE)] <- unlist(longProps, use.names = FALSE)
 
- #return(c(shortProps, longProps))
+
  #new_l <-  sapply(sp, function(l) l[!sapply(l, function(x) length(x) ==0)])
  #sp %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty))
  #isEmpty <- function(x) length(x) == 0
@@ -138,40 +138,39 @@ makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
   #  propDict[unique(shortProps)] <- unique(props$propIri)
 
   #func <- paste0("function(properties = c(\"", paste(shortProps,collapse='", "'),"\"), limit = 1000){
-  func <- paste0("function(properties = ", argProps,  ", limit = 1000){
-   iriProps <- ",  paste(list(longProps), collapse = ", "), "
-   sapply(names(properties), function(t){
-    propType = properties[[t]]
-    sapply(names(propType), function(card){
-      propCard <- propType[[card]]
-      propDict <- list()
-      propDict[propCard] <- iriProps[[t]][[card]]
-      propFilter <- paste(propDict[propCard], collapse='> <')
-      sparql <- makeSparql(propFilter,'", shortName, "', '", className, "', limit)
-      long_df <- SPARQL_query('",endpoint,"', sparql)
-      if(is.null(long_df)){
-       return(NULL)
-     }
-    wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= '~~'))
-    colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*[/|#]','',x))
-    return(wide_df)
-    }, simplify = FALSE)
-   }, simplify = FALSE)
+#  func <- paste0("function(properties = ", argProps,  ", limit = 1000){
+#   iriProps <- ",  paste(list(longProps), collapse = ", "), "
+#   sapply(names(properties), function(t){
+#    propType = properties[[t]]
+#    sapply(names(propType), function(card){
+#      propCard <- propType[[card]]
+#      propDict <- list()
+#      propDict[propCard] <- iriProps[[t]][[card]]
+#      propFilter <- paste(propDict[propCard], collapse='> <')
+#      sparql <- makeSparql(propFilter,'", shortName, "', '", className, "', limit)
+#      long_df <- SPARQL_query('",endpoint,"', sparql)
+#      if(is.null(long_df)){
+#       return(NULL)
+#     }
+#    wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= '~~'))
+#    colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*[/|#]','',x))
+#    return(wide_df)
+#    }, simplify = FALSE)
+ #  }, simplify = FALSE)
 
-  }")
+#  }")
 
-  func <- paste0("function(properties = ", argProps,  ", limit = 1000){
+  func <- paste0("function(properties = ", argProps,  ", limit = 1000, only.complete.cases = FALSE){
    propDict <- ",  paste(list(propDict), collapse = ", "), "
-   sparql <- makeSparql(propDict[properties],'", shortName, "', '", className, "', limit, ", only.complete.cases, ")
+   isEmpty <- function(x) length(x) == 0
+   flatProps <- unlist(properties, use.names = FALSE)
+
+   sparql <- makeSparql(propDict[flatProps],'", shortName, "', '", className, "', limit, only.complete.cases)
       long_df <- SPARQL_query('",endpoint,"', sparql)
       if(is.null(long_df)){
        return(NULL)
      }
-    wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= '~~'))
-    colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*[/|#]','',x))
-    return(wide_df)
-    }, simplify = FALSE)
-   }, simplify = FALSE)
+    return(long_df)
 
   }")
 
@@ -219,13 +218,17 @@ makeSparql <- function( propFilter, shortName, longName, limit = NULL, only.comp
   } else {
     linePrefix = 'OPTIONAL'
   }
-  selectLimitClause <- paste0("SELECT ?", shortName, "\n WHERE { ?", shortName, " a <", longName, "}\n")
+  selectLimitClause <- paste0("{SELECT ?", shortName, "\n WHERE { ?", shortName, " a <", longName, ">}\n")
   if(!is.null(limit)){
     selectLimitClause <- paste0(selectLimitClause, ' LIMIT ', format(limit, scientific = FALSE), "\n")
   }
-
+  selectLimitClause <- paste0(selectLimitClause, "\n }")
   joinClause <- Reduce(function(x,y) {
-    paste0(x, linePrefix, '{ ?', shortName, ' <',  propFilter[[y]], '> ?', y , "}\n" )
+    ret <- paste0(x, linePrefix, '{ ?', shortName, ' <',  propFilter[[y]], '> ')
+    if(!grepl(':', ret)){
+      ret <- paste0(ret, '?')
+    }
+    paste0(ret, y , "}\n" )
   }, names(propFilter), init = '')
 
 

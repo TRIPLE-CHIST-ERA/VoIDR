@@ -104,7 +104,7 @@ cls <- getClasses2(voidEndpoint = 'http://localhost:7200/repositories/uniprotvoi
 x <- getMethods2('http://purl.uniprot.org/core/Book_Citation', cls)
 y <- getMethods2('http://biohackathon.org/resource/faldo#Position', cls)
 sp1 <- makeOneFunction2("http://biohackathon.org/resource/faldo#ExactPosition",  'https://sparql.uniprot.org', cls)
-sp2 <- makeOneFunction2("http://purl.uniprot.org/core/Book_Citation",  'https://sparql.uniprot.org', cls)
+sp2 <- makeOneFunction2("http://purl.uniprot.org/core/Book_Citation",  'https://sparql.uniprot.org', 'http://localhost:7200/repositories/uniprotvoid', cls)
 sp3 <- makeOneFunction2("http://purl.uniprot.org/core/Taxon",  'https://sparql.uniprot.org', 'http://localhost:7200/repositories/uniprotvoid',cls)
 sapply(sp3, function(x) unname(sapply(x, unname))) %>% unname %>% unlist
 getDescriptions(filters=list(class="http://purl.uniprot.org/core/Taxon"), 'http://localhost:7200/repositories/uniprotvoid')
