@@ -121,7 +121,7 @@ makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
 
 
   # shortProps <-sapply(props, function(x) sapply(x, function(y)unique(sub('(.*)[/|#]','', y$property)), simplify = FALSE), simplify = FALSE)
-  shortProps <-sapply(longProps, function(x) sapply(x, function(y)sub('(.*)[/|#]','', y), simplify = FALSE), simplify = FALSE)
+  shortProps <-sapply(longProps, function(x) sapply(x, function(y) gsub(':','_', (sub('(.*)[/|#]','', y))), simplify = FALSE), simplify = FALSE)
 
   propDict <- list()
   propDict[unlist(shortProps, use.names = FALSE)] <- unlist(longProps, use.names = FALSE)
@@ -160,17 +160,22 @@ makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
 
 #  }")
 
+ list(literalProperties = list(nonunique = c("mnemonic", "obsolete", "commonName", "otherName", "partOfLineage", "scientificName", "synonym")),
+      iriProperties = list(unique = c("strain", "narrowerTransitive"), nonunique = c("replaces", "rdfs:subClassOf", "replacedBy", "host", "depiction")))
+
   func <- paste0("function(properties = ", argProps,  ", limit = 1000, only.complete.cases = FALSE){
    propDict <- ",  paste(list(propDict), collapse = ", "), "
    isEmpty <- function(x) length(x) == 0
    flatProps <- unlist(properties, use.names = FALSE)
-
+   returnPattern <- ", argProps, "
    sparql <- makeSparql(propDict[flatProps],'", shortName, "', '", className, "', limit, only.complete.cases)
-      long_df <- SPARQL_query('",endpoint,"', sparql)
-      if(is.null(long_df)){
-       return(NULL)
-     }
-    return(long_df)
+    retDf <- SPARQL_query('",endpoint,"', sparql)
+    retCols <- colnames(retDf)
+    sapply(returnPattern, function(propType){
+      sapply(propType, function(propCard){
+      retDf[,c('", shortName, "',intersect(propCard, retCols))]
+      }, simplify = FALSE)
+    }, simplify = FALSE)
 
   }")
 
@@ -224,11 +229,7 @@ makeSparql <- function( propFilter, shortName, longName, limit = NULL, only.comp
   }
   selectLimitClause <- paste0(selectLimitClause, "\n }")
   joinClause <- Reduce(function(x,y) {
-    ret <- paste0(x, linePrefix, '{ ?', shortName, ' <',  propFilter[[y]], '> ')
-    if(!grepl(':', ret)){
-      ret <- paste0(ret, '?')
-    }
-    paste0(ret, y , "}\n" )
+    paste0(x, linePrefix, '{ ?', shortName, ' <',  propFilter[[y]], '> ?', y,"}\n" )
   }, names(propFilter), init = '')
 
 
