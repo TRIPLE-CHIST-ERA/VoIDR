@@ -1,53 +1,9 @@
-makeOneFunction <- function(className,classIri, endpoint, voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL){
-  props <- getMethods(unclass(className), voidFile, voidEndpoint , voidGraph )
- # propFilter <- paste(unique(props$propIri), collapse='> <')
-  shortName <- sub('(.*)[/|#]','',classIri) %>% make.names %>% sub('\\.+', '_',.)
-
-  #TODO: keep prefixes
-
-  #root <- sub('(.*)[/|#].*','\\1',clasIri)
-  shortProps <-unique(sub('(.*)[/|#]','', props$propIri))
-
-#  propDict <- list()
-#  propDict[unique(shortProps)] <- unique(props$propIri)
-
-  func <- paste0("function(properties = c(\"", paste(shortProps,collapse='", "'),"\"), limit = 1000){
-    propDict <- list()
-    propDict[c(\"",paste(shortProps,collapse='", "'),"\")] <- c(\"", paste(unique(props$propIri),collapse='", "'),"\")
-    propFilter <- paste(propDict[properties], collapse='> <')
-    sparql <-  paste0('SELECT *
-                  WHERE {
-                    ?",shortName, " a <',\"", classIri, "\",'> .
-                     VALUES ?p { <', propFilter, '> }
-                    ?",shortName, " ?p ?value
-                  }')
-    if(!is.null(limit)){
-      sparql <- paste0(sparql, ' LIMIT ', as.integer(limit))
-    }
-    long_df <- SPARQL_query('",endpoint,"', sparql)
-    if(is.null(long_df)){
-      return(NULL)
-    }
-    wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= '~~'))
-    colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*[/|#]','',x))
-    return(wide_df)
-
-  }")
-  doc <- getDescriptions(filter = list(class = classIri, property = paste(unique(props$propIri), collapse='> <')), endpoint)
-  funcDoc <- doc$class$description
-  propDoc <- doc$property
-  doc$property$entity <- sub('(.*)[/|#]','',doc$property$entity)
-  ret <- list()
-  ret[[shortName]] <- list(func = func, funcDoc = funcDoc, propDoc = propDoc)
-  return(ret)
-}
 
 makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL, authors = 'person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))', license = NULL, dest_path = '.'){
-  cls <- getClasses2(voidFile,voidEndpoint, voidGraph)
+  cls <- getClasses(voidFile,voidEndpoint, voidGraph)
   clsNames <- unique(c(cls$literalSparql$classFrom, cls$iriSparql$classFrom))
   funcs <- lapply(clsNames, function(x){
- #   makeOneFunction(x[1], x[2], endpoint, voidFile, voidEndpoint, voidGraph)
-    makeOneFunction2(x, endpoint, voidEndpoint, cls)
+    makeOneFunction(x, endpoint, voidEndpoint, cls)
   }) %>% unlist(recursive = FALSE)
   assign('funcs', funcs, envir = .GlobalEnv)
   # restart every time:
@@ -105,60 +61,28 @@ makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = N
 
 
 
-makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
+makeOneFunction <- function(className, endpoint, voidEndpoint, classList){
 
-  props <- getMethods2(unclass(className), classList )
-  # propFilter <- paste(unique(props$propIri), collapse='> <')
+  props <- getMethods(unclass(className), classList )
+
   shortName <- sub('(.*)[/|#]','',className) %>% make.names %>% sub('\\.+', '_',.)
 
   #TODO: keep prefixes
 
-  #root <- sub('(.*)[/|#].*','\\1',clasIri)
   isEmpty <- function(x) length(x) == 0
   longProps <- sapply(props, function(x) sapply(x, function(y)unique(y$property), simplify = FALSE), simplify = FALSE) %>%
                 sapply(function(l) l[!sapply(l, isEmpty)], simplify = FALSE)  %>% `[`(!sapply(., isEmpty))
 
 
 
-  # shortProps <-sapply(props, function(x) sapply(x, function(y)unique(sub('(.*)[/|#]','', y$property)), simplify = FALSE), simplify = FALSE)
   shortProps <-sapply(longProps, function(x) sapply(x, function(y) gsub(':','_', (sub('(.*)[/|#]','', y))), simplify = FALSE), simplify = FALSE)
 
   propDict <- list()
   propDict[unlist(shortProps, use.names = FALSE)] <- unlist(longProps, use.names = FALSE)
 
 
- #new_l <-  sapply(sp, function(l) l[!sapply(l, function(x) length(x) ==0)])
- #sp %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty))
- #isEmpty <- function(x) length(x) == 0
- #shortProps <- shortProps %>% sapply(function(l) l[!sapply(l, isEmpty)]) %>% `[`(!sapply(., isEmpty)) %>% list
  argProps <- paste(list(shortProps), collapse = ", ")
 
- #return(argProps)
-  #  propDict <- list()
-  #  propDict[unique(shortProps)] <- unique(props$propIri)
-
-  #func <- paste0("function(properties = c(\"", paste(shortProps,collapse='", "'),"\"), limit = 1000){
-#  func <- paste0("function(properties = ", argProps,  ", limit = 1000){
-#   iriProps <- ",  paste(list(longProps), collapse = ", "), "
-#   sapply(names(properties), function(t){
-#    propType = properties[[t]]
-#    sapply(names(propType), function(card){
-#      propCard <- propType[[card]]
-#      propDict <- list()
-#      propDict[propCard] <- iriProps[[t]][[card]]
-#      propFilter <- paste(propDict[propCard], collapse='> <')
-#      sparql <- makeSparql(propFilter,'", shortName, "', '", className, "', limit)
-#      long_df <- SPARQL_query('",endpoint,"', sparql)
-#      if(is.null(long_df)){
-#       return(NULL)
-#     }
-#    wide_df <- tidyr::pivot_wider(long_df, id_cols= 1, names_from = 'p', values_from= 'value', values_fn = function(x)paste(x, collapse= '~~'))
-#    colnames(wide_df) <- sapply(colnames(wide_df), function(x) sub('.*[/|#]','',x))
-#    return(wide_df)
-#    }, simplify = FALSE)
- #  }, simplify = FALSE)
-
-#  }")
 
  list(literalProperties = list(nonunique = c("mnemonic", "obsolete", "commonName", "otherName", "partOfLineage", "scientificName", "synonym")),
       iriProperties = list(unique = c("strain", "narrowerTransitive"), nonunique = c("replaces", "rdfs:subClassOf", "replacedBy", "host", "depiction")))
@@ -180,21 +104,10 @@ makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
   }")
 
 
- #funcdoc <-  sapply(names(shortProps), function(t){
-#    propType = shortProps[[t]]
-#    sapply(names(propType), function(card){
-#      propCard <- longProps[[t]][[card]]
-#      getDescriptions(filter = list(class = className, property = paste(propCard, collapse='> <')), voidEndpoint)
-#    }, simplify = FALSE)}, simplify = FALSE)
-
-
   flatProps <- sapply(longProps, function(x) unname(sapply(x, unname, simplify = FALSE)), simplify = FALSE) %>% unname %>% unlist
 
   doc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
 
-
-
- # doc <- getDescriptions(filter = list(class = className, property = paste(longProps, collapse='> <')), endpoint)
   funcDoc <- doc$class$description
   propDoc <- doc$property
   doc$property$entity <- sub('(.*)[/|#]','',doc$property$entity)
@@ -204,18 +117,6 @@ makeOneFunction2 <- function(className, endpoint, voidEndpoint, classList){
 }
 
 
-makeSparql_old <- function( propFilter, shortName, longName, limit = NULL){
-  sparql <- paste0('SELECT *
-                  WHERE {
-                    ?',shortName, ' a <', longName, '> .
-                     VALUES ?p { <', propFilter, '> }
-                    ?',shortName, ' ?p ?value
-                  }')
-  if(!is.null(limit)){
-    sparql <- paste0(sparql, ' LIMIT ', as.integer(limit))
-  }
-  return(sparql)
-}
 
 makeSparql <- function( propFilter, shortName, longName, limit = NULL, only.complete.cases = FALSE){
   if(only.complete.cases){
