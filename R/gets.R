@@ -67,11 +67,9 @@ expandDF <- function(df, sep='~~'){
 
 
 
-getClasses <- function(voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL){
+getClasses <- function( voidEndpoint = NULL, voidGraph = NULL){
   # only one of voidFile and voidEndpoint; favour voidEndpoint
-  if(is.null(voidEndpoint)){
-    voidGraph <- NULL
-  }
+
 
   sparqlSuffix <-   "{
     SELECT
@@ -87,8 +85,12 @@ getClasses <- function(voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL){
         ?distinct_objects
         ( IF( ?distinct_subjects = ?triples, '1', 'n' ) AS ?subject_cardinality )
         ( IF( ?distinct_objects  = ?triples, '1', 'n' ) AS ?object_cardinality  )
-        WHERE{
-          ?graph a sd:Graph ;
+        WHERE{ "
+  if(!is.null(voidGraph)){
+    sparqlSuffix <- paste0(sparqlSuffix, "\n", "BIND (<", voidGraph, "> AS ?graph)")
+  }
+  sparqlSuffix <- paste0(sparqlSuffix, "
+         ?graph a sd:Graph ;
           void:propertyPartition ?property_partition .
           ?property_partition
           void:property         ?property          ;
@@ -101,7 +103,7 @@ getClasses <- function(voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL){
     GROUP BY ?property
 
   }
-}"
+}")
 statements <- list()
 
   tempSparql <-  'PREFIX sh:<http://www.w3.org/ns/shacl#>
@@ -109,9 +111,7 @@ PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
 PREFIX void:<http://rdfs.org/ns/void#>
 PREFIX void_ext:<http://ldf.fi/void-ext#>
 SELECT DISTINCT  ?classFrom  ?property ?datatypeTo ?cardinalities '
-  if(!is.null(voidGraph)){
-    tempSparql <- paste0(tempSparql, 'FROM <', voidGraph, '> ')
-  }
+
   statements$literalSparql <- paste0(tempSparql, "
 where {
 

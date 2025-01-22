@@ -17,6 +17,7 @@ where {
 {
 ###
 SELECT
+    ?graph
     ?property
     ( CONCAT( MAX( ?subject_cardinality ), '..', MAX( ?object_cardinality )) AS ?cardinalities ) # NB: "1" is smaller than "n"
 WHERE{
@@ -30,6 +31,7 @@ WHERE{
             ( IF( ?distinct_subjects = ?triples, "1", "n" ) AS ?subject_cardinality )
             ( IF( ?distinct_objects  = ?triples, "1", "n" ) AS ?object_cardinality  )
         WHERE{
+            BIND (<https://sparql.uniprot.org/.well-known/void#_graph_uniprot> AS ?graph)
             ?graph a sd:Graph ;
                 void:propertyPartition ?property_partition .
             ?property_partition
@@ -40,7 +42,7 @@ WHERE{
         }
     }
 }
-GROUP BY ?property
+GROUP BY ?graph ?property
 ###
 }
 } ORDER BY ?classFrom ?cardinalities

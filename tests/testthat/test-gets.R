@@ -1,7 +1,7 @@
 
 
 test_that("I can get the class names", {
-  cls <- getClasses(voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid')
+  cls <- getClasses(voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid', voidGraph = 'https://sparql.uniprot.org/.well-known/void#_graph_uniprot')
   assign('cls', cls, envir = parent.env(environment()))
   expect_equal(names(cls), c('literalSparql', 'iriSparql'))
 })
