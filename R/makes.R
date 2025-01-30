@@ -1,6 +1,6 @@
 
-makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL, authors = 'person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))', license = NULL, dest_path = '.'){
-  cls <- getClasses(voidFile,voidEndpoint, voidGraph)
+makePackage <- function(packageName, endpoint, voidEndpoint = NULL, voidGraph = NULL, authors = 'person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))', license = NULL, dest_path = '.'){
+  cls <- getClasses(voidEndpoint, voidGraph)
   clsNames <- unique(c(cls$literalSparql$classFrom, cls$iriSparql$classFrom))
   funcs <- lapply(clsNames, function(x){
     makeOneFunction(x, endpoint, voidEndpoint, cls)
@@ -96,22 +96,28 @@ makeOneFunction <- function(className, endpoint, voidEndpoint, classList){
     retDf <- SPARQL_query('",endpoint,"', sparql)
     retCols <- colnames(retDf)
     ret <- sapply(returnPattern, function(propType){
-      sapply(propType, function(propCard){
+      out <- sapply(propType, function(propCard){
       actualCols <- intersect(propCard, retCols)
       if(length(actualCols) == 0){
         return(NULL)
       }
       retDf[,c('", shortName, "',actualCols)]
       }, simplify = FALSE)
+      return(out[!sapply(out, is.null)])
     }, simplify = FALSE)
-    ret$sparcl <- sparql
-    return(ret)
+    ret$sparql <- sparql
+    class(ret$sparql) = 'sparql_string'
+    assign('print.sparql_string', function(x) cat(x), envir = .GlobalEnv)
+    isEmpty <- function(x) return(length(x)==0)
+
+    return(ret[!sapply(ret,isEmpty)])
   }")
 
 
   flatProps <- sapply(longProps, function(x) unname(sapply(x, unname, simplify = FALSE)), simplify = FALSE) %>% unname %>% unlist
 
-  doc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
+  #doc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
+  doc <-getDescriptions(filter = list(class = className, property = flatProps), endpoint)
 
   funcDoc <- doc$class$description
   propDoc <- doc$property

@@ -155,8 +155,8 @@ getMethods <- function(clsName, propList){
   dt <- dt[dt$classFrom == clsName,]
   cl <- propList$iriSparql
   cl <- cl[cl$classFrom == clsName,]
-  list(literalProperties = list(unique = dt[dt$cardinalities %in% c('1..1', 'n..1'), c('property', 'datatypeTo')], nonunique = dt[dt$cardinalities %in% c('1..n', 'n..n'), c('property', 'datatypeTo')] ),
-       iriProperties = list(unique = cl[cl$cardinalities %in% c('1..1', 'n..1'), 'property'], nonunique = cl[cl$cardinalities %in% c('1..n', 'n..n'), 'property'] )
+  list(literalProperties = list(unique = dt[dt$cardinalities %in% c('1..1', '1..n'), c('property', 'datatypeTo')], nonunique = dt[dt$cardinalities %in% c('n..1', 'n..n'), c('property', 'datatypeTo')] ),
+       iriProperties = list(unique = cl[cl$cardinalities %in% c('1..1', '1..n'), 'property'], nonunique = cl[cl$cardinalities %in% c('n..1', 'n..n'), 'property'] )
   )
 
 }

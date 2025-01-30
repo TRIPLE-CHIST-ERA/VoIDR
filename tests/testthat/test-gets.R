@@ -2,6 +2,8 @@
 
 test_that("I can get the class names", {
   cls <- getClasses(voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid', voidGraph = 'https://sparql.uniprot.org/.well-known/void#_graph_uniprot')
+  cls2 <- getClasses(voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid')
+
   assign('cls', cls, envir = parent.env(environment()))
   expect_equal(names(cls), c('literalSparql', 'iriSparql'))
 })
@@ -17,10 +19,28 @@ test_that("I can get the methods for one class", {
 test_that("I can make a package with a void endpoint)", {
 
   #f <- makePackage('BeatlesR','http://localhost:7200/repositories/beatles', voidEndpoint  = 'http://localhost:7200/repositories/beatles', voidGraph = 'http://example.org/void')
-  f <- makePackage('UniprotR','https://sparql.uniprot.org', voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid')
+  f <- makePackage('UniprotR','https://sparql.uniprot.org', voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid', voidGraph = 'https://sparql.uniprot.org/.well-known/void#_graph_uniprot')
+  f2 <- makePackage('UniprotR2','https://sparql.uniprot.org', voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid')
   expect_true(file.exists(f))
   unlink(f)
 })
+# iriProperties -> objectProperties
+# literalProperties -> dataProperties (to check OWL nomenclature)
+# todo: deduplicate the unique dataframe(s)
+# todo: implement filters
+# return rather a dataframe for feeding into %>% ?
 
 
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT *
+  WHERE {
+    {SELECT ?Taxon
+      WHERE { ?Taxon a <http://purl.uniprot.org/core/Taxon>}
+      LIMIT 1000
+
+    }
+    OPTIONAL{ ?Taxon skos:narrowerTransitive ?narrowerTransitive}
+    OPTIONAL{ ?Taxon ^skos:narrowerTransitive ?narrowerTransitive2 }
+    OPTIONAL{ ?narrowerTransitive2 skos:narrowerTransitive ?Taxon }
+    }
 

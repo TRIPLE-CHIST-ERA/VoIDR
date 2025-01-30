@@ -5,6 +5,9 @@ PREFIX sd:<http://www.w3.org/ns/sparql-service-description#>
 PREFIX void:<http://rdfs.org/ns/void#>
 PREFIX void_ext:<http://ldf.fi/void-ext#>
 SELECT DISTINCT   ?classFrom  ?property ?datatypeTo ?cardinalities
+?distinct_subjects
+        ?triples
+        ?distinct_objects
 where {
   ?cp1 void:class ?classFrom .
   ?cp1 void:propertyPartition ?pp1 .
