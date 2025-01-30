@@ -95,12 +95,17 @@ makeOneFunction <- function(className, endpoint, voidEndpoint, classList){
    sparql <- makeSparql(propDict[flatProps],'", shortName, "', '", className, "', limit, only.complete.cases)
     retDf <- SPARQL_query('",endpoint,"', sparql)
     retCols <- colnames(retDf)
-    sapply(returnPattern, function(propType){
+    ret <- sapply(returnPattern, function(propType){
       sapply(propType, function(propCard){
-      retDf[,c('", shortName, "',intersect(propCard, retCols))]
+      actualCols <- intersect(propCard, retCols)
+      if(length(actualCols) == 0){
+        return(NULL)
+      }
+      retDf[,c('", shortName, "',actualCols)]
       }, simplify = FALSE)
     }, simplify = FALSE)
-
+    ret$sparcl <- sparql
+    return(ret)
   }")
 
 
