@@ -95,18 +95,29 @@ makeOneFunction <- function(className, endpoint, voidEndpoint, classList){
    sparql <- makeSparql(propDict[flatProps],'", shortName, "', '", className, "', limit, only.complete.cases)
     retDf <- SPARQL_query('",endpoint,"', sparql)
     retCols <- colnames(retDf)
-    sapply(returnPattern, function(propType){
-      sapply(propType, function(propCard){
-      retDf[,c('", shortName, "',intersect(propCard, retCols))]
+    ret <- sapply(returnPattern, function(propType){
+      out <- sapply(propType, function(propCard){
+      actualCols <- intersect(propCard, retCols)
+      if(length(actualCols) == 0){
+        return(NULL)
+      }
+      retDf[,c('", shortName, "',actualCols)]
       }, simplify = FALSE)
+      return(out[!sapply(out, is.null)])
     }, simplify = FALSE)
+    ret$sparql <- sparql
+    class(ret$sparql) = 'sparql_string'
+    assign('print.sparql_string', function(x) cat(x), envir = .GlobalEnv)
+    isEmpty <- function(x) return(length(x)==0)
 
+    return(ret[!sapply(ret,isEmpty)])
   }")
 
 
   flatProps <- sapply(longProps, function(x) unname(sapply(x, unname, simplify = FALSE)), simplify = FALSE) %>% unname %>% unlist
 
-  doc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
+  #doc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
+  doc <-getDescriptions(filter = list(class = className, property = flatProps), endpoint)
 
   funcDoc <- doc$class$description
   propDoc <- doc$property
