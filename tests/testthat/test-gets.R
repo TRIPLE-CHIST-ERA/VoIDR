@@ -17,7 +17,7 @@ test_that("I can get the methods for one class", {
 test_that("I can make a package with a void endpoint)", {
 
   #f <- makePackage('BeatlesR','http://localhost:7200/repositories/beatles', voidEndpoint  = 'http://localhost:7200/repositories/beatles', voidGraph = 'http://example.org/void')
-  f <- makePackage('UniprotR','https://sparql.uniprot.org', voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid')
+  f <- makePackage('UniprotR','https://sparql.uniprot.org', voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid', voidGraph = 'https://sparql.uniprot.org/.well-known/void#_graph_uniprot')
   expect_true(file.exists(f))
   unlink(f)
 })

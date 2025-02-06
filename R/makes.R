@@ -1,6 +1,6 @@
 
-makePackage <- function(packageName, endpoint, voidFile = NULL, voidEndpoint = NULL, voidGraph = NULL, authors = 'person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))', license = NULL, dest_path = '.'){
-  cls <- getClasses(voidFile,voidEndpoint, voidGraph)
+makePackage <- function(packageName, endpoint, voidEndpoint = NULL, voidGraph = NULL, authors = 'person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))', license = NULL, dest_path = '.'){
+  cls <- getClasses(voidEndpoint, voidGraph)
   clsNames <- unique(c(cls$literalSparql$classFrom, cls$iriSparql$classFrom))
   funcs <- lapply(clsNames, function(x){
     makeOneFunction(x, endpoint, voidEndpoint, cls)
