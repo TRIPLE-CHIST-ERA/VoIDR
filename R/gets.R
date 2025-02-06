@@ -112,7 +112,7 @@ PREFIX void:<http://rdfs.org/ns/void#>
 PREFIX void_ext:<http://ldf.fi/void-ext#>
 SELECT DISTINCT  ?classFrom  ?property ?datatypeTo ?cardinalities '
 
-  statements$literalSparql <- paste0(tempSparql, "
+  statements$dataSparql <- paste0(tempSparql, "
 where {
 
   ?cp1 void:class ?classFrom .
@@ -125,7 +125,7 @@ where {
   }", sparqlSuffix)
 
 
- statements$iriSparql <- paste0(tempSparql,  "
+ statements$objectSparql <- paste0(tempSparql,  "
 where {
   ?cp1 void:class ?classFrom .
   ?cp1 void:propertyPartition ?pp1 .
@@ -151,12 +151,12 @@ where {
 
 
 getMethods <- function(clsName, propList){
-  dt <- propList$literalSparql
+  dt <- propList$dataSparql
   dt <- dt[dt$classFrom == clsName,]
-  cl <- propList$iriSparql
+  cl <- propList$objectSparql
   cl <- cl[cl$classFrom == clsName,]
-  list(literalProperties = list(unique = dt[dt$cardinalities %in% c('1..1', '1..n'), c('property', 'datatypeTo')], nonunique = dt[dt$cardinalities %in% c('n..1', 'n..n'), c('property', 'datatypeTo')] ),
-       iriProperties = list(unique = cl[cl$cardinalities %in% c('1..1', '1..n'), 'property'], nonunique = cl[cl$cardinalities %in% c('n..1', 'n..n'), 'property'] )
+  list(dataProperties = list(unique = dt[dt$cardinalities %in% c('1..1', '1..n'), c('property', 'datatypeTo')], nonunique = dt[dt$cardinalities %in% c('n..1', 'n..n'), c('property', 'datatypeTo')] ),
+       objectProperties = list(unique = cl[cl$cardinalities %in% c('1..1', '1..n'), 'property'], nonunique = cl[cl$cardinalities %in% c('n..1', 'n..n'), 'property'] )
   )
 
 }

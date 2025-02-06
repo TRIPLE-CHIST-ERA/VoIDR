@@ -1,7 +1,7 @@
 
 makePackage <- function(packageName, endpoint, voidEndpoint = NULL, voidGraph = NULL, authors = 'person("Iulian", "Dragan", email = "iulian.dragan@sib.swiss", role = c("aut", "cre"))', license = NULL, dest_path = '.'){
   cls <- getClasses(voidEndpoint, voidGraph)
-  clsNames <- unique(c(cls$literalSparql$classFrom, cls$iriSparql$classFrom))
+  clsNames <- unique(c(cls$dataSparql$classFrom, cls$objectSparql$classFrom))
   funcs <- lapply(clsNames, function(x){
     makeOneFunction(x, endpoint, voidEndpoint, cls)
   }) %>% unlist(recursive = FALSE)
@@ -27,12 +27,13 @@ makePackage <- function(packageName, endpoint, voidEndpoint = NULL, voidGraph = 
       cat(paste0("#' @md\n"), file = fileName, append = TRUE)
     }
     cat("#' @param limit a numeric, how many triples to fetch, default 1000. If null, all the triples will be fetched.\n", file = fileName, append = TRUE)
+    cat("#' @param only.complete.cases a logical, fetch only rows where all the specified properties have a value? If FALSE (the default) NAs are allowed in the output.\n", file = fileName, append = TRUE)
     funcText <- paste0(n, ' <- ', funcs[[n]]$func)
     cat(funcText, file = fileName, append = TRUE)
   })
   package.skeleton(name = packageName, path = myDir, code_files = paste0(myDir, '/', names(funcs), '.R'))
   # get the sources for SPARQL_query and expandDF
-  lapply(c('makeSparql', 'SPARQL_query'), function(fname){
+  lapply(c('makeSparql', 'SPARQL_query', 'isEmpty', 'print.sparql_string' ), function(fname){
     fsource <- capture.output(print(get(fname, envir = as.environment('package:VoIDR'))))
     fsource[1] <- paste0(fname, ' <- ',fsource[1])
     # without the lines starting with "<" (meta package rubbish)
@@ -50,7 +51,7 @@ makePackage <- function(packageName, endpoint, voidEndpoint = NULL, voidGraph = 
   }
   cat(desc, file = paste0(myDir,'/', packageName,'/DESCRIPTION'), sep ="\n")
   # NAMESPACE
- # cat('export("expandDF")', file = paste0(myDir,'/', packageName,'/NAMESPACE'), append = TRUE)
+  cat('\nexport("print.sparql_string")', file = paste0(myDir,'/', packageName,'/NAMESPACE'), append = TRUE)
   unlink(paste0(myDir,'/', packageName, '/Read-and-delete-me'))
   unlink(paste0(myDir,'/', packageName, '/man/*'))
   devtools::document(pkg = paste0(myDir,'/', packageName))
@@ -69,7 +70,7 @@ makeOneFunction <- function(className, endpoint, voidEndpoint, classList){
 
   #TODO: keep prefixes
 
-  isEmpty <- function(x) length(x) == 0
+
   longProps <- sapply(props, function(x) sapply(x, function(y)unique(y$property), simplify = FALSE), simplify = FALSE) %>%
                 sapply(function(l) l[!sapply(l, isEmpty)], simplify = FALSE)  %>% `[`(!sapply(., isEmpty))
 
@@ -84,8 +85,8 @@ makeOneFunction <- function(className, endpoint, voidEndpoint, classList){
  argProps <- paste(list(shortProps), collapse = ", ")
 
 
- list(literalProperties = list(nonunique = c("mnemonic", "obsolete", "commonName", "otherName", "partOfLineage", "scientificName", "synonym")),
-      iriProperties = list(unique = c("strain", "narrowerTransitive"), nonunique = c("replaces", "rdfs:subClassOf", "replacedBy", "host", "depiction")))
+ list(dataProperties = list(nonunique = c("mnemonic", "obsolete", "commonName", "otherName", "partOfLineage", "scientificName", "synonym")),
+      objectProperties = list(unique = c("strain", "narrowerTransitive"), nonunique = c("replaces", "rdfs:subClassOf", "replacedBy", "host", "depiction")))
 
   func <- paste0("function(properties = ", argProps,  ", limit = 1000, only.complete.cases = FALSE){
    propDict <- ",  paste(list(propDict), collapse = ", "), "
@@ -107,8 +108,6 @@ makeOneFunction <- function(className, endpoint, voidEndpoint, classList){
     }, simplify = FALSE)
     ret$sparql <- sparql
     class(ret$sparql) = 'sparql_string'
-    assign('print.sparql_string', function(x) cat(x), envir = .GlobalEnv)
-    isEmpty <- function(x) return(length(x)==0)
 
     return(ret[!sapply(ret,isEmpty)])
   }")
@@ -149,3 +148,6 @@ makeSparql <- function( propFilter, shortName, longName, limit = NULL, only.comp
 
   return(sparql)
 }
+
+isEmpty <- function(x) length(x) == 0
+print.sparql_string <- function(x) cat(x)

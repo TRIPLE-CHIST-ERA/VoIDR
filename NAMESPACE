@@ -1,1 +1,1 @@
-export('makePackage','expandDF', 'SPARQL_query')
+export('makePackage', 'SPARQL_query')
