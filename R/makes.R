@@ -33,7 +33,7 @@ makePackage <- function(packageName, endpoint, voidEndpoint = NULL, voidGraph = 
   })
   package.skeleton(name = packageName, path = myDir, code_files = paste0(myDir, '/', names(funcs), '.R'))
   # get the sources for SPARQL_query and expandDF
-  lapply(c('makeSparql', 'SPARQL_query', 'isEmpty', 'print.sparql_string' ), function(fname){
+  lapply(c('makeSparql', 'SPARQL_query', 'isEmpty' ), function(fname){
     fsource <- capture.output(print(get(fname, envir = as.environment('package:VoIDR'))))
     fsource[1] <- paste0(fname, ' <- ',fsource[1])
     # without the lines starting with "<" (meta package rubbish)
@@ -51,7 +51,7 @@ makePackage <- function(packageName, endpoint, voidEndpoint = NULL, voidGraph = 
   }
   cat(desc, file = paste0(myDir,'/', packageName,'/DESCRIPTION'), sep ="\n")
   # NAMESPACE
-  cat('\nexport("print.sparql_string")', file = paste0(myDir,'/', packageName,'/NAMESPACE'), append = TRUE)
+  #cat('\nexport("print.sparql_string")', file = paste0(myDir,'/', packageName,'/NAMESPACE'), append = TRUE)
   unlink(paste0(myDir,'/', packageName, '/Read-and-delete-me'))
   unlink(paste0(myDir,'/', packageName, '/man/*'))
   devtools::document(pkg = paste0(myDir,'/', packageName))
@@ -102,12 +102,15 @@ makeOneFunction <- function(className, endpoint, voidEndpoint, classList){
       if(length(actualCols) == 0){
         return(NULL)
       }
-      retDf[,c('", shortName, "',actualCols)]
+      retChunk <- retDf[,c('", shortName, "',actualCols)]
+      retChunk[!duplicated(retChunk),]
       }, simplify = FALSE)
       return(out[!sapply(out, is.null)])
     }, simplify = FALSE)
     ret$sparql <- sparql
     class(ret$sparql) = 'sparql_string'
+    f <- function(x) cat(x)
+    assign('print.sparql_string', f, envir = .GlobalEnv)
 
     return(ret[!sapply(ret,isEmpty)])
   }")
@@ -115,7 +118,7 @@ makeOneFunction <- function(className, endpoint, voidEndpoint, classList){
 
   flatProps <- sapply(longProps, function(x) unname(sapply(x, unname, simplify = FALSE)), simplify = FALSE) %>% unname %>% unlist
 
-#  doc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
+  #doc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
   doc <-getDescriptions(filter = list(class = className, property = flatProps), endpoint)
 
   funcDoc <- doc$class$description
@@ -150,4 +153,4 @@ makeSparql <- function( propFilter, shortName, longName, limit = NULL, only.comp
 }
 
 isEmpty <- function(x) length(x) == 0
-print.sparql_string <- function(x) cat(x)
+#print.sparql_string <- function(x) cat(x)

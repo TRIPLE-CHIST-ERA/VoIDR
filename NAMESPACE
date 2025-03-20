@@ -1,1 +1,1 @@
-export('makePackage', 'SPARQL_query')
+export('makePackage', 'SPARQL_query', 'makeSparql','isEmpty')

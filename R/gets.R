@@ -52,7 +52,11 @@ getDescriptions <- function(filters = list('class' = NULL, 'property' = NULL), e
     OPTIONAL{ ?entity rdfs:label ?desc_2 }
     OPTIONAL{ ?entity skos:prefLabel ?desc_3 }
     }')
+<<<<<<< HEAD
    # cat(sparql)
+=======
+    #cat(sparql)
+>>>>>>> aea6139aa6a94742796f3500abebfde10bb3869f
     SPARQL_query(endpoint, sparql, use.POST = TRUE)
   }, simplify = FALSE)
 
