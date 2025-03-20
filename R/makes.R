@@ -115,8 +115,8 @@ makeOneFunction <- function(className, endpoint, voidEndpoint, classList){
 
   flatProps <- sapply(longProps, function(x) unname(sapply(x, unname, simplify = FALSE)), simplify = FALSE) %>% unname %>% unlist
 
-  doc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
-  #doc <-getDescriptions(filter = list(class = className, property = flatProps), endpoint)
+#  doc <-getDescriptions(filter = list(class = className, property = flatProps), voidEndpoint)
+  doc <-getDescriptions(filter = list(class = className, property = flatProps), endpoint)
 
   funcDoc <- doc$class$description
   propDoc <- doc$property
