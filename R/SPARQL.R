@@ -101,7 +101,8 @@ SPARQL_query <- function(
         print( r )
         stop( paste( r$header, sep="\n", collapse="\n" ))
     }
-    l <- content( r, type="application/json" );
+    l <- tryCatch(content( r, type="application/json" ), error = function(e)content( r, type="text/html" ))
+    # l <- content( r, type="text/html" );
     end_time <- Sys.time()
     message( paste( "Query time:", end_time - start_time, "s" ))
     if( length( l$results$bindings ) == 0 ){

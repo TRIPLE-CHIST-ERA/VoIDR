@@ -31,6 +31,7 @@ makePackage <- function(packageName, endpoint, voidEndpoint = NULL, voidGraph = 
     funcText <- paste0(n, ' <- ', funcs[[n]]$func)
     cat(funcText, file = fileName, append = TRUE)
   })
+  #print(packageName)
   package.skeleton(name = packageName, path = myDir, code_files = paste0(myDir, '/', names(funcs), '.R'))
   # get the sources for SPARQL_query and expandDF
   lapply(c('makeSparql', 'SPARQL_query', 'isEmpty' ), function(fname){
