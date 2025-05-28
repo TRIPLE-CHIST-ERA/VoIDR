@@ -33,13 +33,32 @@ where {
 
 getDescriptions <- function(filters = list('class' = NULL, 'property' = NULL), endpoint){
   sapply(names(filters), function(x){
+#    sparql <- paste0(
+#      'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+#       PREFIX void: <http://rdfs.org/ns/void#>
+#       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+#       SELECT DISTINCT
+#       ?entity
+#      (COALESCE( ?desc_1, ?desc_2, ?desc_3, "-") AS ?description )
+#      WHERE{
+#      ?any void:', x, ' ?entity ')
+#    if(!is.null(filters[[x]])) {
+#      charFilter <- paste(unique(filters[[x]]), collapse='> <')
+#      sparql <- paste0(sparql , '
+#                       VALUES ?entity { <', charFilter, '> }')
+#    }
+#    sparql <- paste0(sparql , '
+#    OPTIONAL{ ?entity rdfs:comment ?desc_1 }
+#    OPTIONAL{ ?entity rdfs:label ?desc_2 }
+#    OPTIONAL{ ?entity skos:prefLabel ?desc_3 }
+#    }')
     sparql <- paste0(
       'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
        PREFIX void: <http://rdfs.org/ns/void#>
        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-       SELECT DISTINCT
+       SELECT
        ?entity
-      (COALESCE( ?desc_1, ?desc_2, ?desc_3, "-") AS ?description )
+      (MIN(COALESCE( ?desc_1, ?desc_2, ?desc_3, "-") ) AS ?description)
       WHERE{
       ?any void:', x, ' ?entity ')
     if(!is.null(filters[[x]])) {
@@ -51,8 +70,10 @@ getDescriptions <- function(filters = list('class' = NULL, 'property' = NULL), e
     OPTIONAL{ ?entity rdfs:comment ?desc_1 }
     OPTIONAL{ ?entity rdfs:label ?desc_2 }
     OPTIONAL{ ?entity skos:prefLabel ?desc_3 }
-    }')
-    #cat(sparql)
+    } GROUP BY ?entity')
+
+
+        #cat(sparql)
     SPARQL_query(endpoint, sparql, use.POST = TRUE)
   }, simplify = FALSE)
 
