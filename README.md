@@ -17,8 +17,8 @@ library(VoIDR)
 
 Set using the example data available at [Jerven Bolleman's VoID generator](https://github.com/JervenBolleman/void-generator/tree/main/src/test/resources).
 Prepare an endpoint with both the data and the VoID data.
-Prepare the VoID data following the [tutorial](https://github.com/JervenBolleman/void-generator/blob/main/Tutorial.md)
-Load into any SPARQL endpoint software
+Prepare the VoID data following the [tutorial](https://github.com/JervenBolleman/void-generator/blob/main/Tutorial.md).
+Load into any SPARQL endpoint software.
 
 ```R
 makePackage(packageName = 'ExampleR', endpoint =  'http://localhost:3030/example/query', voidEndpoint  = 'http://localhost:3030/example/query')
