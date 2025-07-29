@@ -1,13 +1,9 @@
-shorten <- function(string){
-  sub( '.+/', '', string)
+shorten <- function(string) {
+  sub(".+/", "", string)
 }
-createClass <- function(cname, props){
-  cname <- shorten(cname)
+
+create_class <- function(class_name, props) {
+  cname <- shorten(class_name)
   props <- lapply(props, shorten)
-  assign(cname,
-         R6::R6Class(cname,
-                     public = props
-                     ),
-         envir = .GlobalEnv
-        )
+  assign(cname, R6::R6Class(cname, public = props), envir = .GlobalEnv)
 }

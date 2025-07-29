@@ -1,5 +1,5 @@
 ---
-title: "Data visualisation of diffusion statistics"
+title: "Data visualization of diffusion statistics"
 author: "Marco Pagni"
 date: '`r format(Sys.time(), "%d %B, %Y")`'
 output: 
@@ -12,42 +12,42 @@ output:
     fig.cap: yes
 ---
 
-## Initialise R environment
+## Initialize R environment
 
 ```{r }
 
-library( knitr )
-library( DT )
-library( igraph )
-library( visNetwork )
-library( dplyr )
-library( diffuStats ) 
+library(knitr)
+library(DT)
+library(igraph)
+library(visNetwork)
+library(dplyr)
+library(diffuStats)
 
-rm(list=ls())
+rm(list = ls())
 ```
-## Initialise RDF/SPARQL environment
+## Initialize RDF/SPARQL environment
 
 ```{r}
 
 sinergia_path <- "/Users/mpagni/gitlab.sib.swiss/sinergiawolfender"
-endpoint_URL  <- "http://localhost:7200/repositories/JLW"
+endpoint_url  <- "http://localhost:7200/repositories/JLW"
 
-source( file.path(sinergia_path, "common/scripts/SPARQL.R" ))
+source(file.path(sinergia_path, "common/scripts/SPARQL.R"))
 
-ns <- tribble( 
-    ~short, ~long,
-    'rdf',   'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-    'rdfs',  'http://www.w3.org/2000/01/rdf-schema#',
-    'jlw',   'https://www.sinergiawolfender.org/jlw/', 
-    'enpkg', 'https://enpkg.commons-lab.org/kg/', 
-);
+ns <- tribble(
+  ~short, ~long,
+  "rdf",   "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+  "rdfs",  "http://www.w3.org/2000/01/rdf-schema#",
+  "jlw",   "https://www.sinergiawolfender.org/jlw/",
+  "enpkg", "https://enpkg.commons-lab.org/kg/",
+)
 ns
 
-cat( get_SPARQL_prefixes(ns))
+cat(get_sparql_prefixes(ns))
 
 ```
 
-## Define question variables and retrive data accordingly using SPARQL 
+## Define question variables and retrieve data accordingly using SPARQL
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='hide'}
 
@@ -55,13 +55,13 @@ collection <- "jlw:PFCode_1600_PFcode_collection"
 analysis_run <- "jlw:analysis_run_TS_DEC2022"
 analysis_measure <- "jlw:has_remaining_growth_dd_in_infection"
 
-query_node_taxo <- paste0( "
+query_node_taxo <- paste0("
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX jlw: <https://www.sinergiawolfender.org/jlw/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 SELECT DISTINCT ( ?taxon AS ?id ) ?label ?rank ?title
 WHERE{ 
-	?PFCode jlw:is_part_of_PFcode_collection ", collection," ;
+	?PFCode jlw:is_part_of_PFcode_collection ", collection, " ;
     	jlw:has_taxon/jlw:has_parent_taxon* ?taxon .
     ?taxon rdfs:label ?label    ;
     	jlw:has_taxo_rank ?rank .
@@ -71,8 +71,8 @@ WHERE{
     }
 }
 ")
-cat( query_node_taxo )
-node_taxo <- SPARQL_query( endpoint_URL, query_node_taxo, ns = ns )
+cat(query_node_taxo)
+node_taxo <- sparql_query(endpoint_url, query_node_taxo, ns = ns)
 node_taxo
 
 query_edge_taxo <- "
@@ -85,10 +85,10 @@ WHERE{
 }
 "
 
-edge_taxo <- SPARQL_query( endpoint_URL, query_edge_taxo, ns = ns )
+edge_taxo <- sparql_query(endpoint_url, query_edge_taxo, ns = ns)
 edge_taxo
 
-query_value_taxo <- paste0( "
+query_value_taxo <- paste0("
 PREFIX jlw: <https://www.sinergiawolfender.org/jlw/>
 SELECT DISTINCT ( ?taxon AS ?id ) ( AVG( ?number ) AS ?value )
 WHERE{ 
@@ -100,74 +100,72 @@ WHERE{
 		 ", analysis_measure, " ?number
 }
 GROUP BY ?taxon # there might be more than one PFCode per taxon
-" )
-value_taxo <- SPARQL_query( endpoint_URL, query_value_taxo, ns = ns )
+")
+value_taxo <- sparql_query(endpoint_url, query_value_taxo, ns = ns)
 value_taxo
 
-temperature <- setNames( unlist( value_taxo$value ), unlist( value_taxo$id ))
+temperature <- setNames(unlist(value_taxo$value), unlist(value_taxo$id))
 
 temperature
-                         
 ```
 
 
-The `diffuStats` package expects the graph as an `igraph` object, that we have already have produced. It must be converted on-the-fly into an undirected graph. The method `regularisedLaplacianKernel` return a (possibly huge) matrix that might takes some times to compute, although it is not the case here with our "small" graph of about 1,000 vertices. The function  `diffuse` with method `z` is extremely fast (`mc` would be much slower). 
- 
+The `diffuStats` package expects the graph as an `igraph` object, that we have
+already have produced. It must be converted on-the-fly into an undirected graph.
+The method `regularizedLaplacianKernel` return a (possibly huge) matrix that
+might takes some times to compute, although it is not the case here with our
+"small" graph of about 1,000 vertices. The function  `diffuse` with method `z`
+is extremely fast (`mc` would be much slower). 
+
 ```{r}
 
-igraph_tree <- graph_from_data_frame(
-    edge_taxo, 
-    vertices = node_taxo
+igraph_tree <- graph_from_data_frame(edge_taxo, vertices = node_taxo)
+ker_phylogeny <- regularizedLaplacianKernel(
+  graph = as_undirected(igraph_tree),
+  add_diag = 1
 )
-ker_phylogeny <- regularisedLaplacianKernel( 
-    graph = as_undirected( igraph_tree ),
-    add_diag = 1
-);
-Z_score <- diffuse( 
-    K      = ker_phylogeny,
-    scores = temperature,
-    method = "z"
-)[ unlist( node_taxo$id )] # reorder output
+z_score <- diffuse(
+  K      = ker_phylogeny,
+  scores = temperature,
+  method = "z"
+)[unlist(node_taxo$id)] # reorder output
 
 ```
 
-## Visualise results 
+## Visualize results
 
 ```{r}
+# A helper function to map z_score to color. It expect an argument in [0;1]
+ramp_for_z <- colorRamp(c("red", "white", "blue"))
 
-# A helper function to map Z_score to color. It expect an argument in [0;1]
-ramp_for_z <- colorRamp( c("red", "white", "blue") )
-
-thresh <- max( 5, abs( Z_score ))
-node_taxo$color <- ifelse( 
-    is.na( Z_score ),
-        "white",
-        rgb( 
-            ramp_for_z( 
-                pmin( pmax(( Z_score + thresh )/( 2 * thresh ), 0 ), 1 )
-            )
-        , maxColorValue = 255 )
-    )
-node_taxo$shape <- ifelse( node_taxo$id %in% names( temperature ), "square", "dot" )
+thresh <- max(5, abs(z_score))
+node_taxo$color <- ifelse(
+  is.na(z_score),
+  "white",
+  rgb(
+    ramp_for_z(pmin(pmax((z_score + thresh) / (2 * thresh), 0), 1)),
+    maxColorValue = 255
+  )
+)
+node_taxo$shape <- ifelse(node_taxo$id %in% names(temperature), "square", "dot")
 
 vnet <- visNetwork(
-        edges  = edge_taxo,
-        nodes  = node_taxo,
-        width  = 1000,
-        height = 1000,
-        main   = paste0( "Taxonomy for ", collection ),
-    ) %>%
-        visPhysics( stabilization = FALSE ) %>%
-        visEdges(smooth = FALSE)
-    
-#    file <- paste0( dir_path, "/", cc_name, ".html" )
-#    htmlwidgets::saveWidget( # NB: visSave() misses the libdir option
-#        vnet,
-#        file = file,
-#        selfcontained = F,
-#        libdir = paste0( dir_path, "/libdir" ) # non redundant
-#    )
+  edges  = edge_taxo,
+  nodes  = node_taxo,
+  width  = 1000,
+  height = 1000,
+  main   = paste0("Taxonomy for ", collection),
+) %>%
+  visPhysics(stabilization = FALSE) %>%
+  visEdges(smooth = FALSE)
+
+# file <- paste0(dir_path, "/", cc_name, ".html")
+# htmlwidgets::saveWidget( # NB: visSave() misses the libdir option
+#   vnet,
+#   file = file,
+#   selfcontained = F,
+#   libdir = paste0(dir_path, "/libdir") # non redundant
+# )
 
 vnet
-
 ```
