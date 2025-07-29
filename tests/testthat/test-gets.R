@@ -18,11 +18,11 @@ test_that("I can get the methods for one class", {
 
 test_that("I can make a package with a void endpoint)", {
 
-  #f <- makePackage('BeatlesR','http://localhost:7200/repositories/beatles', voidEndpoint  = 'http://localhost:7200/repositories/beatles', voidGraph = 'http://example.org/void')
-  f <- makePackage('UniprotR','https://sparql.uniprot.org', voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid', voidGraph = 'https://sparql.uniprot.org/.well-known/void#_graph_uniprot')
- # f<- makePackage('RheaR','https://sparql.rhea-db.org/sparql', voidEndpoint = 'https://sparql.rhea-db.org/sparql')
-#  f<- makePackage('IDSMR','https://idsm.elixir-czech.cz/sparql', voidEndpoint = 'http://localhost:7200/repositories/IDSM_void')
-  #f2 <- makePackage('UniprotR2','https://sparql.uniprot.org', voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid')
+  #f <- make_package('BeatlesR','http://localhost:7200/repositories/beatles', voidEndpoint  = 'http://localhost:7200/repositories/beatles', voidGraph = 'http://example.org/void')
+  f <- make_package('UniprotR','https://sparql.uniprot.org', voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid', voidGraph = 'https://sparql.uniprot.org/.well-known/void#_graph_uniprot')
+ # f<- make_package('RheaR','https://sparql.rhea-db.org/sparql', voidEndpoint = 'https://sparql.rhea-db.org/sparql')
+#  f<- make_package('IDSMR','https://idsm.elixir-czech.cz/sparql', voidEndpoint = 'http://localhost:7200/repositories/IDSM_void')
+  #f2 <- make_package('UniprotR2','https://sparql.uniprot.org', voidEndpoint = 'http://localhost:7200/repositories/uniprotvoid')
 
   expect_true(file.exists(f))
   unlink(f)
