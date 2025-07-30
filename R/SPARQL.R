@@ -210,3 +210,14 @@ sparql_update <- function() {
 sparql_ask <- function() {
   stop("not yet implemented")
 }
+
+# To make CONSTRUCT requests.
+sparql_construct <- function() {
+  stop("not yet implemented")
+}
+
+
+# To make DESCRIBE requests.
+sparql_describe <- function() {
+  stop("not yet implemented")
+}
