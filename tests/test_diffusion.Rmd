@@ -34,16 +34,16 @@ endpoint_url  <- "http://localhost:7200/repositories/JLW"
 
 source(file.path(sinergia_path, "common/scripts/SPARQL.R"))
 
-ns <- tribble(
+prefixes <- tribble(
   ~short, ~long,
   "rdf",   "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
   "rdfs",  "http://www.w3.org/2000/01/rdf-schema#",
   "jlw",   "https://www.sinergiawolfender.org/jlw/",
   "enpkg", "https://enpkg.commons-lab.org/kg/",
 )
-ns
+prefixes
 
-cat(get_sparql_prefixes(ns))
+cat(get_sparql_prefixes(prefixes))
 
 ```
 
@@ -72,7 +72,7 @@ WHERE{
 }
 ")
 cat(query_node_taxo)
-node_taxo <- sparql_query(endpoint_url, query_node_taxo, ns = ns)
+node_taxo <- sparql_query(endpoint_url, query_node_taxo, prefixes = prefixes)
 node_taxo
 
 query_edge_taxo <- "
@@ -85,7 +85,7 @@ WHERE{
 }
 "
 
-edge_taxo <- sparql_query(endpoint_url, query_edge_taxo, ns = ns)
+edge_taxo <- sparql_query(endpoint_url, query_edge_taxo, prefixes = prefixes)
 edge_taxo
 
 query_value_taxo <- paste0("
@@ -101,7 +101,7 @@ WHERE{
 }
 GROUP BY ?taxon # there might be more than one PFCode per taxon
 ")
-value_taxo <- sparql_query(endpoint_url, query_value_taxo, ns = ns)
+value_taxo <- sparql_query(endpoint_url, query_value_taxo, prefixes = prefixes)
 value_taxo
 
 temperature <- setNames(unlist(value_taxo$value), unlist(value_taxo$id))

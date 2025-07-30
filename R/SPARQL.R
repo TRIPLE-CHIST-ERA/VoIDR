@@ -22,26 +22,26 @@ as_sparql_prefix <- function(prefixes) {
 #' In the HTTP request, the "application/sparql-results+json" MIME type is
 #' used, which is supported by most SPARQL endpoints.
 #'
-#' @param endpoint   URL of SPARQL endpoint.
-#' @param query      SPARQL query as a string.
-#' @param ns         Optional data frame whose first two columns are taken for
-#'                   short and long versions of base IRIs.
-#' @param param      Additional parameter/value pair to pass with the HTTP
-#'                   request.
-#'                   Example: some endpoints accept a "timeout" argument, which
-#'                   could be passed via this argument.
-#' @param use_post   Boolean to switch http protocol (default to GET). The main
-#'                   benefit of POST is to allow for larger input query.
-#' @param add.prefix Boolean to add PREFIX declarations from ns to the SPARQL
-#'                   query.
-#' @param iri.style  One of "long", "short" , "html" or "mdlink" (markdown
-#'                   link), to encode returned IRIs.
-#' @param na_value   Value with which to replace empty fields.
-#' @param echo       Boolean value to echo the SPARQL query before execution.
+#' @param endpoint     URL of SPARQL endpoint.
+#' @param query        SPARQL query as a string.
+#' @param prefixes     Optional data frame whose first two columns are taken
+#'                     for short and long versions of base IRIs.
+#' @param http_params  Additional parameter/value pair to pass with the HTTP
+#'                     request.
+#'                     Example: some endpoints accept a "timeout" argument.
+#'                     This could be passed via this argument.
+#' @param use_post     Boolean to switch http protocol (default to GET). The
+#'                     main benefit of POST is to allow for larger input query.
+#' @param add_prefixes Boolean to add PREFIX declarations passed to the
+#'                     `prefixes` argument to the SPARQL query.
+#' @param iri_style    One of "long", "short" , "html" or "mdlink" (markdown
+#'                     link), to encode returned IRIs.
+#' @param na_value     Value with which to replace empty fields.
+#' @param echo         Boolean value to echo the SPARQL query before execution.
 #'
-#' @returns          A tibble with the query results or NULL if the query
-#'                   returns nothing.
-#' @seealso          SPARQL_ask() SPARQL_update()
+#' @returns            A tibble with the query results or NULL if the query
+#'                     returns nothing.
+#' @seealso            SPARQL_ask() SPARQL_update()
 #'
 #' @examples
 #' \donotrun{
@@ -57,26 +57,26 @@ as_sparql_prefix <- function(prefixes) {
 sparql_query <- function(
   endpoint,
   query,
-  ns = tibble::tribble(
+  prefixes = tibble::tribble(
     ~short, ~long,
     "rdf",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs", "http://www.w3.org/2000/01/rdf-schema#"
   ),
-  param      = list(),
-  use_post   = FALSE,
-  add_prefix = FALSE,
-  iri_style  = "short",
-  na_value   = NA,
-  echo       = FALSE
+  http_params  = list(),
+  use_post     = FALSE,
+  add_prefixes = FALSE,
+  iri_style    = "short",
+  na_value     = NA,
+  echo         = FALSE
 ) {
   # Prepend PREFIXes to the SPARQL query.
-  if (add_prefix) {
-    param$query <- paste(as_sparql_prefix(ns), query, sep = "\n\n")
+  if (add_prefixes) {
+    http_params$query <- paste(as_sparql_prefix(prefixes), query, sep = "\n\n")
   } else {
-    param$query <- query
+    http_params$query <- query
   }
   if (echo) {
-    cat(paste0(param$query, "\n"))
+    cat(paste0(http_params$query, "\n"))
   }
 
   # Submit SPARQL query to endpoint.
@@ -85,7 +85,7 @@ sparql_query <- function(
     response <- httr::POST(
       endpoint,
       httr::add_headers(Accept = "application/sparql-results+json"),
-      body = param,
+      body = http_params,
       encode = "form"
     )
   } else { # use GET
@@ -93,18 +93,17 @@ sparql_query <- function(
       endpoint,
       "?",
       paste0(
-        sapply(seq(1, length(param)), function(i) {
+        sapply(seq(1, length(http_params)), function(i) {
           paste0(
-            names(param)[i],
+            names(http_params)[i],
             "=",
-            URLencode(param[[i]], reserved = TRUE),
+            URLencode(http_params[[i]], reserved = TRUE),
             "&"
           )
         }),
         collapse = ""
       )
     )
-    # print(url)
     response <- httr::GET(
       url,
       httr::add_headers(Accept = "application/sparql-results+json")
@@ -158,8 +157,8 @@ sparql_query <- function(
           dplyr::where(rlang::is_character),
           ~ stringi::stri_replace_all_regex(
             unlist(.),
-            pattern       = unlist(ns[, 2]),
-            replacement   = paste0(unlist(ns[, 1]), ":"),
+            pattern       = unlist(prefixes[, 2]),
+            replacement   = paste0(unlist(prefixes[, 1]), ":"),
             vectorize_all = FALSE
           )
         )
@@ -172,8 +171,8 @@ sparql_query <- function(
           dplyr::where(rlang::is_character),
           ~ stringi::stri_replace_all_regex(
             unlist(.),
-            pattern       = paste0("(", unlist(ns[, 2]), ")(\\S+)"),
-            replacement   = paste0("[", unlist(ns[, 1]), ":$2]($1$2)"),
+            pattern       = paste0("(", unlist(prefixes[, 2]), ")(\\S+)"),
+            replacement   = paste0("[", unlist(prefixes[, 1]), ":$2]($1$2)"),
             vectorize_all = FALSE
           )
         )
@@ -186,12 +185,12 @@ sparql_query <- function(
           dplyr::where(rlang::is_character),
           ~ stringi::stri_replace_all_regex(
             unlist(.),
-            pattern     = paste0("(", unlist(ns[, 2]), ")(\\S+)"),
+            pattern     = paste0("(", unlist(prefixes[, 2]), ")(\\S+)"),
             replacement = paste0(
               '<a href="',
-              unlist(ns[, 2]),
+              unlist(prefixes[, 2]),
               '$2">',
-              unlist(ns[, 1]),
+              unlist(prefixes[, 1]),
               ":$2</a>"
             ),
             vectorize_all = FALSE
