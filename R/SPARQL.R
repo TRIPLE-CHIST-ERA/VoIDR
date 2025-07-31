@@ -12,6 +12,111 @@ as_sparql_prefix <- function(prefixes) {
   )
 }
 
+is_valid_rdf_term <- function(x) {
+  is.list(x) && !is.null(x$type) && !is.null(x$value)
+}
+
+is_valid_query_result <- function(x) {
+  is.list(x) &&
+    all(c("head", "results") %in% names(x) &&
+    "bindings" %in% names(x$results))
+}
+
+DEFAULT_PREFIXES <- tibble::tribble(
+  ~short, ~long,
+  "rdf",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+  "rdfs", "http://www.w3.org/2000/01/rdf-schema#"
+)
+
+#' Convert an individual RDF term to an R string.
+#'
+#' @param value    must be of type `list` with `type` and `value` fields,
+#'                 or `NULL`.
+#' @param na_value Value returned when `value` is NULL or an empty string.
+#'
+rdf_term_to_string <- function(value, na_value = NA) {
+  # This function assumes that the input `value` has the correct structure:
+  # a list with "type" and "value" fields.
+  if (is.null(value) || value$value == "") {
+    return(na_value)
+  }
+  switch(
+    value$type,
+    "uri" = paste0("<", value$value, ">"),
+    "literal" = value$value,
+    "bnode" = paste0("_:", value$value),
+    rlang::abort(paste("Unknown RDF type in JSON response:", value$type))
+  )
+}
+
+iri_to_string <- function(
+  iri,
+  iri_style = "long",
+  prefixes = DEFAULT_PREFIXES
+) {
+  if (iri_style == "long") {
+    return(paste0("<", iri, ">"))
+  }
+
+  short_form <- unlist(prefixes[, 1])
+  long_form <- unlist(prefixes[, 2])
+  patterns <- paste0("(", long_form, ")(\\S+)")
+  replacements <- switch(
+    iri_style,
+    "short" = paste0(short_form, ":$2"),
+    "mdlink" = paste0("[", short_form, ":$2]($1$2)"),
+    "html" = paste0('<a href="', long_form, '$2">', short_form, ":$2</a>"),
+    rlang::abort(paste("Unsupported IRI `style` value`:", iri_style))
+  )
+  stringi::stri_replace_all_regex(
+    iri,
+    pattern = patterns,
+    replacement = replacements,
+    vectorize_all = FALSE
+  )
+}
+
+#' Parse a `query_result` object - a nested list derived from the JSON returned
+#' by a SPARQL query - and return it as an R tibble.
+#'
+#' @param query_result  Object (list) to parse.
+#' @param na_value      Value with which to replace empty/missing fields.
+#'
+query_result_to_tibble <- function(
+  query_result,
+  na_value = NA
+) {
+
+  if (!is_valid_query_result(query_result)) {
+    rlang::abort(
+      paste0(
+        "Input value '", query_result, "' is not a valid SPARQL query result"
+      )
+    )
+  }
+
+  # Parse the "query_result" object.
+  # For each record ("table row") returned by the request, check whether
+  # some fields ("table columns") are missing, which indicates a "NA"
+  # value.
+  variable_names <- unlist(query_result$head)
+  lapply(
+    variable_names,
+    function(column_name) {
+      sapply(
+        query_result$results$bindings,
+        function(x) rdf_term_to_string(x[[column_name]], na_value)
+      )
+    }
+  ) |>
+    # Convert the parsed list to an R tibble.
+    rlang::set_names(variable_names) |>
+    tibble::as_tibble() |>
+    # Call the built-in type conversion of R.
+    type.convert(na.strings = c(""), as.is = TRUE)
+
+}
+
 #' @title Run a SPARQL query
 #'
 #' @description run a SPARQL query, either SELECT, CONSTRUCT or DESCRIBE and
@@ -109,6 +214,8 @@ sparql_query <- function(
       httr::add_headers(Accept = "application/sparql-results+json")
     )
   }
+  # Make sure the HTTP request completed successfully, otherwise report the
+  # error and exit function.
   if (response$status_code != 200) {
     print(response)
     stop(paste(response$header, sep = "\n", collapse = "\n"))
@@ -119,87 +226,38 @@ sparql_query <- function(
   )
   message(paste("Query time:", Sys.time() - start_time, "s"))
 
+  # If the query returned 0 results, exit function.
   if (length(query_result$results$bindings) == 0) {
     return(NULL)
   }
+  result_as_tibble <- query_result_to_tibble(query_result)
 
-  # Parse the JSON response of the query, and replace missing values with
-  # explicit NAs.
-  buf <- lapply(
-    unlist(query_result$head),
-    function(name) {
-      sapply(
-        query_result$results$bindings,
-        function(b) {
-          ifelse(
-            is.null(b[[name]]),
-            NA,
-            b[[name]]$value
-          )
-        },
-        simplify = TRUE
-      )
-    }
+  # Adapt IRI style to the format requested by user.
+  if (iri_style == "long") {
+    return(result_as_tibble)
+  }
+  short_form <- unlist(prefixes[, 1])
+  long_form <- unlist(prefixes[, 2])
+  patterns <- paste0("<(", long_form, ")(\\S+)>")
+  replacements <- switch(
+    iri_style,
+    "short" = paste0(short_form, ":$2"),
+    "mdlink" = paste0("[", short_form, ":$2]($1$2)"),
+    "html" = paste0('<a href="', long_form, '$2">', short_form, ":$2</a>"),
+    rlang::abort(paste("Unsupported iri_style:", iri_style))
   )
-  t <- tibble::as_tibble(setNames(buf, unlist(query_result$head))) |>
-    # call built-in type conversion of R
-    type.convert(na.strings = c(""), as.is = TRUE)
-
-  if (!is.na(na_value)) {
-    t <- t %>% replace(is.na(.), na_value)
-  }
-
-  # TODO: fix NAs
-  if (iri_style == "short") {
-    return(t %>%
-      dplyr::mutate(
-        dplyr::across(
-          dplyr::where(rlang::is_character),
-          ~ stringi::stri_replace_all_regex(
-            unlist(.),
-            pattern       = unlist(prefixes[, 2]),
-            replacement   = paste0(unlist(prefixes[, 1]), ":"),
-            vectorize_all = FALSE
-          )
+  result_as_tibble %>%
+    dplyr::mutate(
+      dplyr::across(
+        dplyr::where(rlang::is_character),
+        ~ stringi::stri_replace_all_regex(
+          unlist(.),
+          pattern = patterns,
+          replacement = replacements,
+          vectorize_all = FALSE
         )
       )
     )
-  } else if (iri_style == "mdlink") {
-    return(t %>%
-      dplyr::mutate(
-        dplyr::across(
-          dplyr::where(rlang::is_character),
-          ~ stringi::stri_replace_all_regex(
-            unlist(.),
-            pattern       = paste0("(", unlist(prefixes[, 2]), ")(\\S+)"),
-            replacement   = paste0("[", unlist(prefixes[, 1]), ":$2]($1$2)"),
-            vectorize_all = FALSE
-          )
-        )
-      )
-    )
-  } else if (iri_style == "html") {
-    return(t %>%
-      dplyr::mutate(
-        dplyr::across(
-          dplyr::where(rlang::is_character),
-          ~ stringi::stri_replace_all_regex(
-            unlist(.),
-            pattern     = paste0("(", unlist(prefixes[, 2]), ")(\\S+)"),
-            replacement = paste0(
-              '<a href="',
-              unlist(prefixes[, 2]),
-              '$2">',
-              unlist(prefixes[, 1]),
-              ":$2</a>"
-            ),
-            vectorize_all = FALSE
-          )
-        )
-      )
-    )
-  }
-  return(t)
 }
 
 sparql_update <- function() {
@@ -219,4 +277,59 @@ sparql_construct <- function() {
 # To make DESCRIBE requests.
 sparql_describe <- function() {
   stop("not yet implemented")
+}
+
+
+to_tibble_v1 <- function(query_result, iri_style) {
+  prefixes <- tibble::tribble(
+    ~short, ~long,
+    "wkd",  "http://www.wikidata.org/entity/",
+    "rdfs", "http://www.w3.org/2000/01/rdf-schema#",
+    "wkb", "http://wikiba.se/ontology#"
+  )
+  
+  
+  result_as_tibble <- query_result_to_tibble(query_result)
+
+
+  # Adapt IRI style.
+  if (iri_style == "long") {
+    return(result_as_tibble)
+  }
+  short_form <- unlist(prefixes[, 1])
+  long_form <- unlist(prefixes[, 2])
+  patterns <- paste0("<(", long_form, ")(\\S+)>")
+  replacements <- switch(
+    iri_style,
+    "short" = paste0(short_form, ":$2"),
+    "mdlink" = paste0("[", short_form, ":$2]($1$2)"),
+    "html" = paste0('<a href="', long_form, '$2">', short_form, ":$2</a>"),
+    rlang::abort(paste("Unsupported iri_style:", iri_style))
+  )
+  result_as_tibble %>%
+    dplyr::mutate(
+      dplyr::across(
+        dplyr::where(rlang::is_character),
+        ~ stringi::stri_replace_all_regex(
+          unlist(.),
+          pattern = patterns,
+          replacement = replacements,
+          vectorize_all = FALSE
+        )
+      )
+    )
+
+  # result_as_tibble |>
+  #   dplyr::mutate(
+  #   dplyr::across(
+  #     dplyr::where(rlang::is_character),
+  #       function(x) stringi::stri_replace_all_regex(
+  #         x,
+  #         pattern = patterns,
+  #         replacement = replacements,
+  #         vectorize_all = FALSE
+  #       )
+  #   )
+  # )
+
 }
