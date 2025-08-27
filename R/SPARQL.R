@@ -1,15 +1,95 @@
-library(dplyr)
-library(purrr)
-library(jsonlite)
-library(httr)
-library(stringi)
 
-# Converts a 2-column tribble into a SPARQL PREFIX string.
+DEFAULT_PREFIXES <- tibble::tribble(
+  ~short, ~long,
+  "rdf",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+  "rdfs", "http://www.w3.org/2000/01/rdf-schema#"
+)
+
+#' Converts a 2-column tibble into a SPARQL PREFIX string.
+#'
+#' @param prefixes  2-column tibble containing the long and short form of
+#'                  the SPARQL prefixes.
+#'
+#' @keywords internal
 as_sparql_prefix <- function(prefixes) {
   paste(
     paste0("PREFIX ", unlist(prefixes[, 1]), ": <", unlist(prefixes[, 2]), ">"),
     collapse = "\n"
   )
+}
+
+#' Checks whether the `x` list object has the expected structure of a standard
+#' SPARQL query response in JSON format.
+#'
+#' @keywords internal
+is_valid_rdf_term <- function(x) {
+  is.list(x) && !is.null(x$type) && !is.null(x$value)
+}
+
+is_valid_query_result <- function(x) {
+  is.list(x) &&
+    all(c("head", "results") %in% names(x) &&
+    "bindings" %in% names(x$results))
+}
+
+#' Convert an individual RDF term to an R string.
+#'
+#' @param value    must be of type `list` with `type` and `value` fields,
+#'                 or `NULL`.
+#' @param na_value Value returned when `value` is NULL or an empty string.
+#'
+#' @keywords internal
+rdf_term_to_string <- function(value, na_value = NA) {
+  # This function assumes that the input `value` has the correct structure:
+  # a list with "type" and "value" fields.
+  if (is.null(value) || value$value == "") {
+    return(na_value)
+  }
+  switch(
+    value$type,
+    "uri" = paste0("<", value$value, ">"),
+    "literal" = value$value,
+    "bnode" = paste0("_:", value$value),
+    rlang::abort(paste("Unknown RDF type in JSON response:", value$type))
+  )
+}
+
+#' Parse a `query_result` object - a nested list derived from the JSON returned
+#' by a SPARQL query - and return it as an R tibble.
+#'
+#' @param query_result  Object (list) to parse.
+#' @param na_value      Value with which to replace empty/missing fields.
+#'
+#' @keywords internal
+query_result_to_tibble <- function(query_result, na_value = NA) {
+
+  if (!is_valid_query_result(query_result)) {
+    rlang::abort(
+      paste0(
+        "Input value '", query_result, "' is not a valid SPARQL query result"
+      )
+    )
+  }
+
+  # Parse the "query_result" nested list object.
+  # For each record ("table row") returned by the request, check whether some
+  # fields ("table columns") are missing, which indicates a "NA" value.
+  variable_names <- unlist(query_result$head)
+  lapply(
+    variable_names,
+    function(column_name) {
+      sapply(
+        query_result$results$bindings,
+        function(x) rdf_term_to_string(x[[column_name]], na_value)
+      )
+    }
+  ) |>
+    # Convert the parsed list to an R tibble.
+    rlang::set_names(variable_names) |>
+    tibble::as_tibble() |>
+    # Call the built-in type conversion of R.
+    type.convert(na.strings = c(""), as.is = TRUE)
+
 }
 
 #' @title Run a SPARQL query
@@ -82,13 +162,15 @@ sparql_query <- function(
   # Submit SPARQL query to endpoint.
   start_time <- Sys.time()
   if (use_post) {
+    # Submit query via a POST request.
     response <- httr::POST(
       endpoint,
       httr::add_headers(Accept = "application/sparql-results+json"),
       body = http_params,
       encode = "form"
     )
-  } else { # use GET
+  } else {
+    # Submit query via a GET request.
     url <- paste0(
       endpoint,
       "?",
@@ -109,6 +191,9 @@ sparql_query <- function(
       httr::add_headers(Accept = "application/sparql-results+json")
     )
   }
+
+  # Make sure the HTTP request completed successfully, otherwise report the
+  # error and exit function.
   if (response$status_code != 200) {
     print(response)
     stop(paste(response$header, sep = "\n", collapse = "\n"))
@@ -119,87 +204,43 @@ sparql_query <- function(
   )
   message(paste("Query time:", Sys.time() - start_time, "s"))
 
+  # Convert the HTTP query response into a tibble. If the query returned
+  # no results, exit function.
   if (length(query_result$results$bindings) == 0) {
     return(NULL)
   }
+  query_result_tibble <- query_result_to_tibble(query_result)
 
-  # Parse the JSON response of the query, and replace missing values with
-  # explicit NAs.
-  buf <- lapply(
-    unlist(query_result$head),
-    function(name) {
-      sapply(
-        query_result$results$bindings,
-        function(b) {
-          ifelse(
-            is.null(b[[name]]),
-            NA,
-            b[[name]]$value
-          )
-        },
-        simplify = TRUE
-      )
-    }
+  # Adapt IRI style to the format requested by the user.
+  # Note: applying the regexp using dplyr is much faster than trying to apply
+  # it when converting individual RDF terms.
+  if (iri_style == "long") {
+    return(query_result_tibble)
+  }
+  short_forms <- unlist(prefixes[, 1])
+  long_forms <- unlist(prefixes[, 2])
+  pattern <- paste0("<(", long_forms, ")(\\S+)>")
+  replacement <- switch(
+    iri_style,
+    "short" = paste0(short_forms, ":$2"),
+    "mdlink" = paste0("[", short_forms, ":$2]($1$2)"),
+    "html" = paste0('<a href="', long_forms, '$2">', short_forms, ":$2</a>"),
+    rlang::abort(paste("Unsupported iri_style:", iri_style))
   )
-  t <- tibble::as_tibble(setNames(buf, unlist(query_result$head))) |>
-    # call built-in type conversion of R
-    type.convert(na.strings = c(""), as.is = TRUE)
-
-  if (!is.na(na_value)) {
-    t <- t %>% replace(is.na(.), na_value)
-  }
-
-  # TODO: fix NAs
-  if (iri_style == "short") {
-    return(t %>%
-      dplyr::mutate(
-        dplyr::across(
-          dplyr::where(rlang::is_character),
-          ~ stringi::stri_replace_all_regex(
-            unlist(.),
-            pattern       = unlist(prefixes[, 2]),
-            replacement   = paste0(unlist(prefixes[, 1]), ":"),
+  query_result_tibble |>
+    dplyr::mutate(
+      dplyr::across(
+        dplyr::where(rlang::is_character),
+        function(x) {
+          stringi::stri_replace_all_regex(
+            unlist(x),
+            pattern = pattern,
+            replacement = replacement,
             vectorize_all = FALSE
           )
-        )
+        }
       )
     )
-  } else if (iri_style == "mdlink") {
-    return(t %>%
-      dplyr::mutate(
-        dplyr::across(
-          dplyr::where(rlang::is_character),
-          ~ stringi::stri_replace_all_regex(
-            unlist(.),
-            pattern       = paste0("(", unlist(prefixes[, 2]), ")(\\S+)"),
-            replacement   = paste0("[", unlist(prefixes[, 1]), ":$2]($1$2)"),
-            vectorize_all = FALSE
-          )
-        )
-      )
-    )
-  } else if (iri_style == "html") {
-    return(t %>%
-      dplyr::mutate(
-        dplyr::across(
-          dplyr::where(rlang::is_character),
-          ~ stringi::stri_replace_all_regex(
-            unlist(.),
-            pattern     = paste0("(", unlist(prefixes[, 2]), ")(\\S+)"),
-            replacement = paste0(
-              '<a href="',
-              unlist(prefixes[, 2]),
-              '$2">',
-              unlist(prefixes[, 1]),
-              ":$2</a>"
-            ),
-            vectorize_all = FALSE
-          )
-        )
-      )
-    )
-  }
-  return(t)
 }
 
 sparql_update <- function() {
