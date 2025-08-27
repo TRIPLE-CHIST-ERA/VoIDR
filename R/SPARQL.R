@@ -5,6 +5,16 @@ DEFAULT_PREFIXES <- tibble::tribble(
   "rdfs", "http://www.w3.org/2000/01/rdf-schema#"
 )
 
+#' Returns a string with the formatted elapsed time.
+#' @keywords internal
+elapsed_time <- function(start_time, end_time) {
+  elapsed_seconds <- round(as.numeric(end_time - start_time, units = "secs"))
+  h <- elapsed_seconds %/% 3600
+  m <- (elapsed_seconds %% 3600) %/% 60
+  s <- elapsed_seconds %% 60
+  sprintf("%02d:%02d:%02d", h, m, s)
+}
+
 #' Converts a 2-column tibble into a SPARQL PREFIX string.
 #'
 #' @param prefixes  2-column tibble containing the long and short form of
@@ -202,7 +212,7 @@ sparql_query <- function(
     httr::content(response, type = "application/json"),
     error = function(e) content(response, type = "text/html")
   )
-  message(paste("Query time:", Sys.time() - start_time, "s"))
+  message(paste("Query time:", elapsed_time(start_time, end_time = Sys.time())))
 
   # Convert the HTTP query response into a tibble. If the query returned
   # no results, exit function.
