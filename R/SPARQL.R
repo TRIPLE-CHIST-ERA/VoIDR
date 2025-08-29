@@ -160,57 +160,33 @@ sparql_query <- function(
   echo         = FALSE
 ) {
   # Prepend PREFIXes to the SPARQL query.
-  if (add_prefixes) {
-    http_params$query <- paste(as_sparql_prefix(prefixes), query, sep = "\n\n")
+  http_params$query <- if (add_prefixes) {
+    paste(as_sparql_prefix(prefixes), query, sep = "\n\n")
   } else {
-    http_params$query <- query
+    query
   }
   if (echo) {
     cat(paste0(http_params$query, "\n"))
   }
 
-  # Submit SPARQL query to endpoint.
+  # Build and run the HTTP request.
   start_time <- Sys.time()
-  if (use_post) {
-    # Submit query via a POST request.
-    response <- httr::POST(
-      endpoint,
-      httr::add_headers(Accept = "application/sparql-results+json"),
-      body = http_params,
-      encode = "form"
-    )
-  } else {
-    # Submit query via a GET request.
-    url <- paste0(
-      endpoint,
-      "?",
-      paste0(
-        sapply(seq(1, length(http_params)), function(i) {
-          paste0(
-            names(http_params)[i],
-            "=",
-            URLencode(http_params[[i]], reserved = TRUE),
-            "&"
-          )
-        }),
-        collapse = ""
-      )
-    )
-    response <- httr::GET(
-      url,
-      httr::add_headers(Accept = "application/sparql-results+json")
-    )
-  }
+  add_params <- if (use_post) httr2::req_body_form else httr2::req_url_query
+  response <- httr2::request(endpoint) |>
+    httr2::req_headers(Accept = "application/sparql-results+json") |>
+    add_params(!!!http_params) |>
+    httr2::req_perform()
 
-  # Make sure the HTTP request completed successfully, otherwise report the
-  # error and exit function.
-  if (response$status_code != 200) {
+  # Make sure the HTTP request completed successfully.
+  if (httr2::resp_status(response) != 200) {
     print(response)
     stop(paste(response$header, sep = "\n", collapse = "\n"))
   }
+
+  # Try to parse the response as JSON. Fallback on HTML if that fails.
   query_result <- tryCatch(
-    httr::content(response, type = "application/json"),
-    error = function(e) httr::content(response, type = "text/html")
+    httr2::resp_body_json(response),
+    error = httr2::resp_body_html
   )
   message(paste("Query time:", elapsed_time(start_time, end_time = Sys.time())))
 
