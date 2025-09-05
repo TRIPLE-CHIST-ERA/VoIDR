@@ -102,6 +102,9 @@ query_result_to_tibble <- function(query_result, na_value = NA) {
 
 }
 
+MIME_TYPE_SPARQL_JSON <- "application/sparql-results+json"
+MIME_TYPE_N_TRIPLE <- "application/n-triples"
+
 #' @title Run a SPARQL query
 #'
 #' @description run a SPARQL query, either SELECT, CONSTRUCT or DESCRIBE and
@@ -235,15 +238,101 @@ sparql_update <- function() {
 
 sparql_ask <- function() {
   stop("not yet implemented")
+
+  # This should support:
+  # httr2::req_headers(Accept = "application/sparql-results+json")
 }
 
 # To make CONSTRUCT requests.
 sparql_construct <- function() {
   stop("not yet implemented")
+
+  # This should support the same response types as DESCRIBE.
 }
 
 
 # To make DESCRIBE requests.
-sparql_describe <- function() {
-  stop("not yet implemented")
+sparql_describe <- function(
+  endpoint,
+  query,
+  prefixes = DEFAULT_PREFIXES,
+  add_prefixes = FALSE,
+  http_params  = list(),
+  use_post = FALSE
+) {
+  # Prepend PREFIXes to the SPARQL query.
+  http_params$query <- if (add_prefixes) {
+    paste(as_sparql_prefix(prefixes), query, sep = "\n\n")
+  } else {
+    query
+  }
+
+  # Build and run the HTTP request.
+  start_time <- Sys.time()
+  add_params <- if (use_post) httr2::req_body_form else httr2::req_url_query
+  response <- httr2::request(endpoint) |>
+    httr2::req_headers(Accept = MIME_TYPE_N_TRIPLE) |>
+    add_params(!!!http_params) |>
+    httr2::req_perform()
+
+  # Make sure the HTTP request completed successfully.
+  if (httr2::resp_status(response) != 200) {
+    print(response)
+    stop(paste(response$header, sep = "\n", collapse = "\n"))
+  }
+
+  # Try to parse the response as a string. Fallback on HTML if that fails.
+  query_result <- tryCatch(
+    httr2::resp_body_string(response),
+    error = httr2::resp_body_html
+  )
+  message(paste("Query time:", elapsed_time(start_time, end_time = Sys.time())))
+
+  # Parse the response to a list of n-triples.
+  query_result <- strsplit(httr2::resp_body_string(response), ".\n")[[1]] |>
+    lapply(trimws) |>
+    unlist()
+  is_iri_triple <- startsWith(query_result, "<") & endsWith(query_result, ">")
+
+  # Return a list with 2 data frames:
+  list(
+    iri = query_result[is_iri_triple] |>
+      lapply(get_iri_from_ntriple) |>
+      do.call(what = rbind) |>
+      as.data.frame(stringsAsFactors = FALSE) |>
+      purrr::set_names(c("subject", "predicate", "object")),
+    literal = query_result[!is_iri_triple] |>
+      lapply(get_iri_and_lit_from_ntriple) |>
+      do.call(what = rbind) |>
+      as.data.frame(stringsAsFactors = FALSE) |>
+      purrr::set_names(c("subject", "predicate", "literal"))
+  )
 }
+
+REGEXP_IRI <- "<[^>]*>"
+REGEXP_LITERAL <- "(?<=\").*(?=\")"
+REGEXP_BLANK_NODE <- "_:[A-Za-z0-9]+"
+
+get_iri_from_ntriple <- function(x) {
+  split_values <- stringr::str_extract_all(x, REGEXP_IRI)[[1]]
+  if (length(split_values) != 3) {
+    stop("N-triple string '", x, "' does not contain 3 IRI values")
+  }
+  split_values
+}
+
+get_iri_and_lit_from_ntriple <- function(x) {
+  split_values <- stringr::str_extract_all(
+    x, paste(REGEXP_IRI, REGEXP_LITERAL, sep = "|")
+  )[[1]]
+  if (length(split_values) != 3) {
+    stop("N-triple string '", x, "' does not contain 2 IRIs + literal values")
+  }
+  split_values
+}
+
+# For unit testing
+# Test strings:
+#   "<foo> <bar> <foobar>"
+#   "<a> <b> \"foo <bar> <bar>\"@en"
+#   "<a> <b> \"foo <bar> <bar>\"^^integer"
