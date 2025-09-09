@@ -243,6 +243,13 @@ sparql_ask <- function() {
   # httr2::req_headers(Accept = "application/sparql-results+json")
 }
 
+
+sparql_count <- function() {
+  stop("not yet implemented")
+
+}
+
+
 # To make CONSTRUCT requests.
 sparql_construct <- function() {
   stop("not yet implemented")
@@ -294,14 +301,48 @@ sparql_describe <- function(
     unlist()
   is_iri_triple <- startsWith(query_result, "<") & endsWith(query_result, ">")
 
+
+  # prepare nodes list:
+  # sort n-triples, so all the same obj/pred are grouped.
+  d <- query_result[!is_iri_triple] |>
+    lapply(get_iri_and_lit_from_ntriple) |>
+    do.call(what = rbind) |>
+    as.data.frame(stringsAsFactors = FALSE) 
+
+  d[2:9,] = d[1,]
+  d[,3] = rep(c("a", "b", "c"), times=3)
+  d
+
+  library(dplyr)
+
+  df <- d |>
+    dplyr::group_by(V1, V2) |>
+    dplyr::summarise(
+      literal = paste(V3, collapse = " | "),
+      .groups = "drop"
+    )
+  tdf <- as.data.frame(df)
+  tdf[2:5,] <- tdf[1,] 
+  tdf[2,2] <- "foo"
+  tdf[3,2] <- "bar"
+  tdf[4:5,1] <- "testClass"
+  tdf[4:5,3] <- "x | y"
+  tdf
+
+  tdf |> tidyr::pivot_wider(
+    names_from = V2,
+    values_from = literal,
+    values_fill = NA
+  )
+
   # Return a list with 2 data frames:
   list(
-    iri = query_result[is_iri_triple] |>
+    edges = query_result[is_iri_triple] |>
       lapply(get_iri_from_ntriple) |>
       do.call(what = rbind) |>
       as.data.frame(stringsAsFactors = FALSE) |>
-      purrr::set_names(c("subject", "predicate", "object")),
-    literal = query_result[!is_iri_triple] |>
+      dplyr::select("from" = 1,  "to" = 3, "attribute" = 2),
+    nodes = query_result[!is_iri_triple] |>
       lapply(get_iri_and_lit_from_ntriple) |>
       do.call(what = rbind) |>
       as.data.frame(stringsAsFactors = FALSE) |>
